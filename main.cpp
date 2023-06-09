@@ -1,11 +1,12 @@
 #include <stdio.h>
+#include <iostream>
+#include <vector>
 #include "Interval.h"
 #include "Functions.h"
 #include "IntervalVector.h"
-#include <iostream>
-#include <vector>
 #include "AutomaticDifferentiation.h"
 #include "Matrix.h"
+#include "Refinement.h"
 
 //Refinement of Interval Discrete Mixed-Monotonic Equations (RIDMME)
 
@@ -21,5 +22,14 @@ int main(){
     cout << "J_x sup" << endl;
     PrintMatrix(GrdSup);
     
+    matrix X = {{1.0, 5.0}, {10, 20}, {1, 2}};
+    vector<int> N = {2,2,4};
+
+    matrix X_sub = NonUniformSubdivision(X, N);
+    matrixInt allPerms = generateAllPermutations(N);
+
+    PrintMatrix(X_sub);
+    PrintMatrixInt(allPerms);
+
     return 0;
 }
