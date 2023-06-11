@@ -11,32 +11,23 @@
 //Refinement of Interval Discrete Mixed-Monotonic Equations (RIDMME)
 
 int main(){
+    // Intervals for model states
     array X_inf{230, 50, 20};
     array X_sup{300, 60, 40};
 
-    matrix GrdInf, GrdSup;
-    AutoDiffModel(X_inf,X_sup, GrdInf, GrdSup);
-
-    cout << "J_x inf" << endl;
-    PrintMatrix(GrdInf);
-    cout << "J_x sup" << endl;
-    PrintMatrix(GrdSup);
-    
     matrix X;
+
     MergeTwoArray(X_inf, X_sup, X);
-    PrintMatrix(X);
-    arrayInt N = {2,2,4};
+    arrayInt N = {5,5,5};
 
     matrix X_sub = NonUniformSubdivision(X, N);
     matrixInt allPerms = generateAllPermutations(N);
 
-    PrintMatrix(X_sub);
-    PrintMatrixInt(allPerms);
-
-    matrix Jx_inf,Jx_sup;
-
+    matrix Jx_inf(3,array(3)),Jx_sup(3,array(3));
     MultipleAutoDiffModel(X_sub, allPerms, N, Jx_inf,Jx_sup);
 
+    PrintMatrix(Jx_inf);
+    PrintMatrix(Jx_sup);
 
     return 0;
 }

@@ -43,7 +43,7 @@ void AutoDiffModel(array X_inf, array X_sup, matrix& GrdInf, matrix& GrdSup){
     }
 }
 
-void MultipleAutoDiffModel(matrix X_sub, matrixInt allPerms, arrayInt N, matrix Jx_inf, matrix Jx_sup){
+void MultipleAutoDiffModel(matrix X_sub, matrixInt allPerms, arrayInt N, matrix& Jx_inf, matrix& Jx_sup){
 
     int NumPers = allPerms.size();
     int n_x = allPerms[0].size();
@@ -51,11 +51,15 @@ void MultipleAutoDiffModel(matrix X_sub, matrixInt allPerms, arrayInt N, matrix 
     array X_inf(n_x);
     array X_sup(n_x);
 
-    matrix GrdInf, GrdSup;
+    matrix GrdInf_temp, GrdSup_temp;
+    matrix GrdInf(n_x, array(n_x, numeric_limits<double>::infinity()));
+    matrix GrdSup(n_x, array(n_x, -numeric_limits<double>::infinity()));
 
     N = getCumulativeSum(N);
 
     for (int i = 0; i < NumPers; i++){
+        GrdInf_temp = GrdInf;
+        GrdSup_temp = GrdSup;
         arrayInt row = allPerms[i];
         for(int j = 0; j < n_x; j++){
             int idx = row[j];
@@ -63,5 +67,9 @@ void MultipleAutoDiffModel(matrix X_sub, matrixInt allPerms, arrayInt N, matrix 
             X_sup[j] = X_sub[N[j]+idx-1][1];
         }
         AutoDiffModel(X_inf, X_sup, GrdInf, GrdSup);
-    }
+        GrdInf = combineMatrices(GrdInf_temp, GrdInf, 0);
+        GrdSup = combineMatrices(GrdSup_temp, GrdSup, 1);        
+    }    
+    Jx_inf = GrdInf;
+    Jx_sup = GrdSup;
 }

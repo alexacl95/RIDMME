@@ -42,7 +42,7 @@ arrayInt getCumulativeSum(arrayInt &arr){
    return cumulativeSum;
 }
 
-matrix combineMatrices(const matrix& matrix1, const matrix& matrix2) {
+matrix combineMatrices(const matrix& matrix1, const matrix& matrix2, const int MinMax ) {
     double rows = matrix1.size();
     double cols = matrix1[0].size();
 
@@ -50,7 +50,11 @@ matrix combineMatrices(const matrix& matrix1, const matrix& matrix2) {
 
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
-            combinedMatrix[i][j] = std::min(matrix1[i][j], matrix2[i][j]);
+            if(MinMax == 0){
+                combinedMatrix[i][j] = std::min(matrix1[i][j], matrix2[i][j]);
+            }else if (MinMax == 1) {
+                combinedMatrix[i][j] = std::max(matrix1[i][j], matrix2[i][j]);
+            }            
         }
     }
     return combinedMatrix;
