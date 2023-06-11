@@ -7,6 +7,7 @@
 #include "AutomaticDifferentiation.h"
 #include "Matrix.h"
 #include "Refinement.h"
+#include "NumericalMethod.h"
 
 //Refinement of Interval Discrete Mixed-Monotonic Equations (RIDMME)
 
@@ -28,6 +29,10 @@ int main(){
 
     PrintMatrix(Jx_inf);
     PrintMatrix(Jx_sup);
+   
+    DoubleEvaluationModel(1.0, X_inf, X_inf);
+
+    cout<<endl;
 
     return 0;
 }

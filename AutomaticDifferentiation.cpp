@@ -73,3 +73,16 @@ void MultipleAutoDiffModel(matrix X_sub, matrixInt allPerms, arrayInt N, matrix&
     Jx_inf = GrdInf;
     Jx_sup = GrdSup;
 }
+
+void DoubleEvaluationModel(double t, array& x, array p){
+    int n_x = x.size();
+    INTERVAL_VECTOR X(n_x);
+    for (int i = 0; i < n_x; i++){
+        X(i+1) = INTERVAL(x[i], x[i]);
+    } 
+    array Sol(n_x);
+    for (int i = 0; i < n_x; i++){
+        Sol[i] = Inf(FunctionValue(ModelFunction (X, i)));
+    }    
+    x = Sol;
+}
