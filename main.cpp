@@ -22,14 +22,21 @@ int main(){
     cout << "J_x sup" << endl;
     PrintMatrix(GrdSup);
     
-    matrix X = {{1.0, 5.0}, {10, 20}, {1, 2}};
-    vector<int> N = {2,2,4};
+    matrix X;
+    MergeTwoArray(X_inf, X_sup, X);
+    PrintMatrix(X);
+    arrayInt N = {2,2,4};
 
     matrix X_sub = NonUniformSubdivision(X, N);
     matrixInt allPerms = generateAllPermutations(N);
 
     PrintMatrix(X_sub);
     PrintMatrixInt(allPerms);
+
+    matrix Jx_inf,Jx_sup;
+
+    MultipleAutoDiffModel(X_sub, allPerms, N, Jx_inf,Jx_sup);
+
 
     return 0;
 }

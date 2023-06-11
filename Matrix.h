@@ -14,5 +14,8 @@ using matrixInt = vector<arrayInt>;
 
 void PrintMatrix(matrix& vec);
 void PrintMatrixInt(matrixInt& vec);
+void MergeTwoArray(array X_inf, array X_sup, matrix& X);
+arrayInt getCumulativeSum(arrayInt &arr);
+matrix combineMatrices(const matrix& matrix1, const matrix& matrix2);
 
 #endif
