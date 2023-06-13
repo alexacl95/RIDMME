@@ -1,7 +1,7 @@
 #include "NumericalMethod.h"
 
 array MonotonicityModel(
-    double (*fnc)(double, array, array),
+    void (*fnc)(double, array&, array),
     double t,
     array x_low, array x_up,
     array p_low, array p_up,
@@ -68,8 +68,13 @@ array MonotonicityModel(
                 }
             }
         }
-        array xi_low_succ = fnc(t, xi_low[i], pi_low[i]);
-        array xi_up_succ = fnc(t, xi_up[i], pi_up[i]);
+        array xi_low_temp = xi_low[i];
+        array xi_up_temp = xi_up[i];
+        
+        fnc(t, xi_low_temp, pi_low[i]);
+        array xi_low_succ = xi_low_temp;
+        fnc(t, xi_up_temp, pi_up[i]);
+        array xi_up_succ = xi_up_temp;
 
         // Over-approximation on dimension i
         succ_low[i] = xi_low_succ[i] - inner_product(comp_state[i].begin(), comp_state[i].end(), xi_low[i].begin(), 0.0) -
@@ -77,5 +82,5 @@ array MonotonicityModel(
         succ_up[i] = xi_up_succ[i] + inner_product(comp_state[i].begin(), comp_state[i].end(), xi_low[i].begin(), 0.0) +
                      inner_product(comp_input[i].begin(), comp_input[i].end(), pi_low[i].begin(), 0.0);
     }
-    return { succ_low, succ_up };
+    return succ_low;
 }

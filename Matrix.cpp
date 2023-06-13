@@ -51,9 +51,9 @@ matrix combineMatrices(const matrix& matrix1, const matrix& matrix2, const int M
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
             if(MinMax == 0){
-                combinedMatrix[i][j] = std::min(matrix1[i][j], matrix2[i][j]);
+                combinedMatrix[i][j] = min(matrix1[i][j], matrix2[i][j]);
             }else if (MinMax == 1) {
-                combinedMatrix[i][j] = std::max(matrix1[i][j], matrix2[i][j]);
+                combinedMatrix[i][j] = max(matrix1[i][j], matrix2[i][j]);
             }            
         }
     }

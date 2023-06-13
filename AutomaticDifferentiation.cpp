@@ -9,8 +9,8 @@ INTERVAL_AUTODIFF ModelFunction (INTERVAL_VECTOR & v, int const i){
     mu = 0.01;
     //Model functions
     INTERVAL_AUTODIFF v1 = (1-mu)*x(1)*(1-beta*x(2)/(x(1)+x(2)+x(3))) + mu*(x(1)+x(2)+x(3));                
-    INTERVAL_AUTODIFF v2 = (1-mu)*(x(1)*beta*x(2)/(x(1)+x(2)+x(3))+x(2)*(1-gamma));
-    INTERVAL_AUTODIFF v3 = (1-mu)*(x(3) + x(2)*gamma);
+    INTERVAL_AUTODIFF v2 = (1-mu)*(x(1)*beta*x(2)/(x(1)+x(2)+x(3)))+(1-mu)*(x(2)*(1-gamma));
+    INTERVAL_AUTODIFF v3 = (1-mu)*x(3) + (1-mu)*(x(2)*gamma);
     //Save results
     vector<INTERVAL_AUTODIFF> w(3);
     w[0] = v1;
@@ -21,6 +21,16 @@ INTERVAL_AUTODIFF ModelFunction (INTERVAL_VECTOR & v, int const i){
 
     return result;
 }
+
+// INTERVAL_AUTODIFF ModelFunction(INTERVAL_VECTOR & v, int const i){
+//     INTERVAL_AUTODIFF x(v);
+//     double r = 0.35, k = 30;
+//     INTERVAL_AUTODIFF v1 =   x(1)+r*x(1)*(1-x(1)/k);
+//     vector<INTERVAL_AUTODIFF> w(1);
+//     w[0] = v1;
+//     INTERVAL_AUTODIFF result = w[i];
+//     return result;
+// }
 
 void AutoDiffModel(array X_inf, array X_sup, matrix& GrdInf, matrix& GrdSup){   
     int n_x = X_inf.size();
@@ -74,7 +84,7 @@ void MultipleAutoDiffModel(matrix X_sub, matrixInt allPerms, arrayInt N, matrix&
     Jx_sup = GrdSup;
 }
 
-void DoubleEvaluationModel(double t, array& x, array p){
+void ToDoubleEvaluationModel(double t, array& x, array p){
     int n_x = x.size();
     INTERVAL_VECTOR X(n_x);
     for (int i = 0; i < n_x; i++){
@@ -82,7 +92,7 @@ void DoubleEvaluationModel(double t, array& x, array p){
     } 
     array Sol(n_x);
     for (int i = 0; i < n_x; i++){
-        Sol[i] = Inf(FunctionValue(ModelFunction (X, i)));
+        Sol[i] = Sup(FunctionValue(ModelFunction (X, i)));
     }    
     x = Sol;
 }

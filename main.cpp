@@ -19,7 +19,7 @@ int main(){
     matrix X;
 
     MergeTwoArray(X_inf, X_sup, X);
-    arrayInt N = {5,5,5};
+    arrayInt N = {20,20,20};
 
     matrix X_sub = NonUniformSubdivision(X, N);
     matrixInt allPerms = generateAllPermutations(N);
@@ -29,8 +29,12 @@ int main(){
 
     PrintMatrix(Jx_inf);
     PrintMatrix(Jx_sup);
-   
-    DoubleEvaluationModel(1.0, X_inf, X_inf);
+
+    ToDoubleEvaluationModel(1.0, X_inf, X_inf);
+
+    matrix Jp_inf(3,array(3)),Jp_sup(3,array(3));
+    array P_inf(3), P_sup(3);
+    array D = MonotonicityModel(ToDoubleEvaluationModel, 3.0, X_inf, X_sup, P_inf, P_sup, Jx_inf,Jx_sup,Jp_inf,Jp_sup);
 
     cout<<endl;
 
