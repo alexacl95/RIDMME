@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <fstream>
 
 using namespace std;
 
@@ -21,5 +22,7 @@ matrix combineMatrices(const matrix& matrix1, const matrix& matrix2, const int M
 array sumVectors(array& array1, array& array2);
 array susVectors(array& array1, array& array2);
 array matrixVectorMultiply(const matrix& Matrix, const array& Array);
+void saveMatrixToCSV(const matrix& Matrix, const string& filename);
+void saveMatricesToCSV(const matrix& matrix1, const matrix& matrix2, const string& filename);
 
 #endif

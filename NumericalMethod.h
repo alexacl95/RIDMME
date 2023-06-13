@@ -2,16 +2,19 @@
 #define NM_H
 
 #include "Matrix.h"
+#include "AutomaticDifferentiation.h"
+#include "Refinement.h"
 #include <cmath>
 #include <algorithm>
 #include <numeric>
 
-array MonotonicityModel(
+void MixMonotonicityMethod(
     void (*fnc)(double, array&, array),
     double t,
-    array x_low, array x_up,
+    array& x_low, array& x_up,
     array p_low, array p_up,
     matrix J_x_low, matrix J_x_up,
     matrix J_p_low, matrix J_p_up
 );
+void Simulation(array X_inf, array X_sup, arrayInt N, int t_f);
 #endif

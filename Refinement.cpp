@@ -1,13 +1,14 @@
 #include "Refinement.h"
 
 
-matrix NonUniformSubdivision(matrix& X,
-    arrayInt& N) {
+matrix NonUniformSubdivision(array X_inf, array X_sup, arrayInt& N){
     matrix X_sub;
+    matrix X;
+    MergeTwoArray(X_inf, X_sup, X);
     int n_x = X.size();
 
     for (int i = 0; i < n_x; i++) {
-        std::vector<double> Xi = X[i];
+        vector<double> Xi = X[i];
         double w_sub = (Xi[1] - Xi[0]) / N[i];
 
         for (int j = 0; j < N[i]; j++) {

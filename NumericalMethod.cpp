@@ -1,9 +1,9 @@
 #include "NumericalMethod.h"
 
-array MonotonicityModel(
+void MixMonotonicityMethod(
     void (*fnc)(double, array&, array),
     double t,
-    array x_low, array x_up,
+    array& x_low, array& x_up,
     array p_low, array p_up,
     matrix J_x_low, matrix J_x_up,
     matrix J_p_low, matrix J_p_up
@@ -88,7 +88,43 @@ array MonotonicityModel(
         succ_up[i] = xi_up_succ[i] + Complement[i];
     }
 
-    PrintArray(succ_low);
-    PrintArray(succ_up);
-    return succ_low;
+    x_low = succ_low;
+    x_up = succ_up;
+
+    PrintArray(x_low);
+    PrintArray(x_up);
+}
+
+void Simulation(array X_inf, array X_sup, arrayInt N, int t_f){
+    
+    int n_x = X_inf.size();
+    
+    matrix Results_low(t_f,array(n_x)), Results_up(t_f,array(n_x));
+    matrix Jp_inf(n_x,array(n_x)),Jp_sup(n_x,array(n_x));
+    array P_inf(n_x), P_sup(n_x);
+
+    Results_low[0] = X_inf;
+    Results_up[0] = X_sup;
+
+    for (int i = 1; i < t_f; i++){
+        cout << "Iteration: " << i <<endl;
+
+        //Subdivision process of the states
+        matrix X_sub = NonUniformSubdivision(X_inf, X_sup, N);
+        matrixInt allPerms = generateAllPermutations(N);
+        
+        //Calculation of refined Jacobian
+        matrix Jx_inf(n_x,array(n_x)), Jx_sup(n_x,array(n_x));
+        MultipleAutoDiffModel(X_sub, allPerms, N, Jx_inf,Jx_sup);
+       
+        //mixed monotonicity numerical method
+        MixMonotonicityMethod(ToDoubleEvaluationModel, i,
+                        X_inf, X_sup, P_inf, P_sup, 
+                        Jx_inf,Jx_sup,Jp_inf,Jp_sup);
+        cout << endl; 
+        Results_low[i] = X_inf;
+        Results_up[i] = X_sup;
+    }
+    //Save results in a csv file
+    saveMatricesToCSV(Results_low, Results_up, "Results.csv");
 }

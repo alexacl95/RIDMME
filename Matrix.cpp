@@ -49,7 +49,7 @@ arrayInt getCumulativeSum(arrayInt &arr){
    return cumulativeSum;
 }
 
-matrix combineMatrices(const matrix& matrix1, const matrix& matrix2, const int MinMax ) {
+matrix combineMatrices(const matrix& matrix1, const matrix& matrix2, const int MinMax){
     double rows = matrix1.size();
     double cols = matrix1[0].size();
 
@@ -67,7 +67,7 @@ matrix combineMatrices(const matrix& matrix1, const matrix& matrix2, const int M
     return combinedMatrix;
 }
 
-array sumVectors(array& array1, array& array2) {
+array sumVectors(array& array1, array& array2){
     // Check if the input vectors have the same size
     if (array1.size() != array2.size()) {
         cout << "Error: Vectors must have the same size." << endl;
@@ -81,7 +81,7 @@ array sumVectors(array& array1, array& array2) {
     return result;
 }
 
-array susVectors(array& array1, array& array2) {
+array susVectors(array& array1, array& array2){
     // Check if the input vectors have the same size
     if (array1.size() != array2.size()) {
         cout << "Error: Vectors must have the same size." << endl;
@@ -95,7 +95,7 @@ array susVectors(array& array1, array& array2) {
     return result;
 }
 
-array matrixVectorMultiply(const matrix& Matrix, const array& Array) {
+array matrixVectorMultiply(const matrix& Matrix, const array& Array){
     // Check if the matrix and vector dimensions are compatible
     int numRows = Matrix.size();
     int numCols = Matrix[0].size();
@@ -113,4 +113,47 @@ array matrixVectorMultiply(const matrix& Matrix, const array& Array) {
         }
     }
     return result;
+}
+
+void saveMatrixToCSV(const matrix& Matrix, const string& filename){
+    ofstream file(filename);
+
+    if (!file) {
+        cout << "Error: Failed to create the file." << endl;
+        return;
+    }
+    // Iterate over the rows of the matrix
+    for (const auto& row : Matrix) {
+        // Iterate over the elements of each row
+        for (const auto& element : row) {
+            // Write the element to the file
+            file << element << ",";
+        }
+        // Move to the next line
+        file << endl;
+    }
+
+    file.close();
+    cout << "Matrix saved to " << filename << endl;
+}
+
+void saveMatricesToCSV(const matrix& matrix1, const matrix& matrix2, const string& filename){
+    ofstream file(filename);
+
+    // Write matrix1 to CSV
+    for (const auto& row : matrix1) {
+        for (const auto& element : row) {
+            file << element << ",";
+        }
+        file << endl;
+    }
+    // Write matrix2 to CSV
+    for (const auto& row : matrix2) {
+        for (const auto& element : row) {
+            file << element << ",";
+        }
+        file << endl;
+    }
+
+    file.close();
 }
