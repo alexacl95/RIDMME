@@ -24,6 +24,10 @@ array MonotonicityModel(
     matrix pi_up(n_x, array(n_p));
     matrix comp_input(n_x, array(n_p));
 
+    array Complement(n_x);
+    array ComplementStates(n_x);
+    array ComplementInputs(n_x);
+
     array succ_low(n_x);
     array succ_up(n_x);
 
@@ -77,10 +81,14 @@ array MonotonicityModel(
         array xi_up_succ = xi_up_temp;
 
         // Over-approximation on dimension i
-        succ_low[i] = xi_low_succ[i] - inner_product(comp_state[i].begin(), comp_state[i].end(), xi_low[i].begin(), 0.0) -
-                      inner_product(comp_input[i].begin(), comp_input[i].end(), pi_low[i].begin(), 0.0);
-        succ_up[i] = xi_up_succ[i] + inner_product(comp_state[i].begin(), comp_state[i].end(), xi_low[i].begin(), 0.0) +
-                     inner_product(comp_input[i].begin(), comp_input[i].end(), pi_low[i].begin(), 0.0);
+        ComplementStates = matrixVectorMultiply(comp_state,susVectors(xi_low[i],xi_up[i]));
+        ComplementInputs = matrixVectorMultiply(comp_input,susVectors(pi_low[i],pi_up[i]));
+        Complement = susVectors(ComplementStates, ComplementInputs);
+        succ_low[i] = xi_low_succ[i] - Complement[i];
+        succ_up[i] = xi_up_succ[i] + Complement[i];
     }
+
+    PrintArray(succ_low);
+    PrintArray(succ_up);
     return succ_low;
 }

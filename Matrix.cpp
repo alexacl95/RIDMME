@@ -20,6 +20,13 @@ void PrintMatrixInt(matrixInt& vec){
     cout << endl;
 }
 
+void PrintArray(array& vec){
+    for (int i = 0; i < vec.size(); i++){
+        cout << vec[i]<< " ";
+    }
+    cout << endl;
+}
+
 void MergeTwoArray(array X_inf, array X_sup, matrix& X){
     int n_x = X_inf.size();
     X.resize(n_x);
@@ -58,4 +65,52 @@ matrix combineMatrices(const matrix& matrix1, const matrix& matrix2, const int M
         }
     }
     return combinedMatrix;
+}
+
+array sumVectors(array& array1, array& array2) {
+    // Check if the input vectors have the same size
+    if (array1.size() != array2.size()) {
+        cout << "Error: Vectors must have the same size." << endl;
+        return {};
+    }
+    array result(array1.size());
+    // Iterate over the elements of the vectors and add them together
+    for (int i = 0; i < array1.size(); i++) {
+        result[i] = array1[i] + array2[i];
+    }
+    return result;
+}
+
+array susVectors(array& array1, array& array2) {
+    // Check if the input vectors have the same size
+    if (array1.size() != array2.size()) {
+        cout << "Error: Vectors must have the same size." << endl;
+        return {};
+    }
+    array result(array1.size());
+    // Iterate over the elements of the vectors and add them together
+    for (int i = 0; i < array1.size(); i++) {
+        result[i] = array1[i] - array2[i];
+    }
+    return result;
+}
+
+array matrixVectorMultiply(const matrix& Matrix, const array& Array) {
+    // Check if the matrix and vector dimensions are compatible
+    int numRows = Matrix.size();
+    int numCols = Matrix[0].size();
+    int ArraySize = Array.size();
+
+    if (numCols != ArraySize) {
+        cout << "Error: Matrix and vector dimensions are incompatible." << endl;
+        return {};
+    }
+    array result(numRows, 0.0);
+    // Perform matrix-vector multiplication
+    for (int i = 0; i < numRows; i++) {
+        for (int j = 0; j < numCols; j++) {
+            result[i] += Matrix[i][j] * Array[j];
+        }
+    }
+    return result;
 }
