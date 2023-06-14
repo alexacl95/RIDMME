@@ -1,7 +1,7 @@
 #include "NumericalMethod.h"
 
 void MixMonotonicityMethod(
-    void (*fnc)(double, array&, array),
+    INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, int const),
     double t,
     array& x_low, array& x_up,
     array p_low, array p_up,
@@ -75,9 +75,9 @@ void MixMonotonicityMethod(
         array xi_low_temp = xi_low[i];
         array xi_up_temp = xi_up[i];
         
-        fnc(t, xi_low_temp, pi_low[i]);
+        ToDoubleEvaluationModel(fnc,t, xi_low_temp, pi_low[i]);
         array xi_low_succ = xi_low_temp;
-        fnc(t, xi_up_temp, pi_up[i]);
+        ToDoubleEvaluationModel(fnc, t, xi_up_temp, pi_up[i]);
         array xi_up_succ = xi_up_temp;
 
         // Over-approximation on dimension i
@@ -95,7 +95,7 @@ void MixMonotonicityMethod(
     PrintArray(x_up);
 }
 
-void Simulation(array X_inf, array X_sup, arrayInt N, int t_f){
+void Simulation(INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, int const), array X_inf, array X_sup, arrayInt N, int t_f){
     
     int n_x = X_inf.size();
     
@@ -115,10 +115,10 @@ void Simulation(array X_inf, array X_sup, arrayInt N, int t_f){
         
         //Calculation of refined Jacobian
         matrix Jx_inf(n_x,array(n_x)), Jx_sup(n_x,array(n_x));
-        MultipleAutoDiffModel(X_sub, allPerms, N, Jx_inf,Jx_sup);
+        MultipleAutoDiffModel(fnc, X_sub, allPerms, N, Jx_inf, Jx_sup);
        
         //mixed monotonicity numerical method
-        MixMonotonicityMethod(ToDoubleEvaluationModel, i,
+        MixMonotonicityMethod(fnc, i,
                         X_inf, X_sup, P_inf, P_sup, 
                         Jx_inf,Jx_sup,Jp_inf,Jp_sup);
         cout << endl; 

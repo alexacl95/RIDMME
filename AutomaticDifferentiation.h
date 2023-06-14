@@ -6,9 +6,7 @@
 #include "Matrix.h"
 #include <limits>
 
-INTERVAL_AUTODIFF ModelFunction (INTERVAL_VECTOR & v, int const i);
-void AutoDiffModel(array X_inf, array X_sup, matrix& GrdInf, matrix& GrdSup);
-void MultipleAutoDiffModel(matrix X_sub, matrixInt allPerms, arrayInt N, matrix& GrdInf, matrix& GrdSup);
-void ToDoubleEvaluationModel(double t, array& x, array p);
-
+void AutoDiffModel(INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, int const), array X_inf, array X_sup, matrix& GrdInf, matrix& GrdSup);
+void MultipleAutoDiffModel(INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, int const), matrix X_sub, matrixInt allPerms, arrayInt N, matrix& Jx_inf, matrix& Jx_sup);
+void ToDoubleEvaluationModel(INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, int const), double t, array& x, array p);
 #endif

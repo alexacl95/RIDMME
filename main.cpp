@@ -8,6 +8,7 @@
 #include "Matrix.h"
 #include "Refinement.h"
 #include "NumericalMethod.h"
+#include "Models.h"
 
 //Refinement of Interval Discrete Mixed-Monotonic Equations (RIDMME)
 
@@ -16,9 +17,9 @@ int main(){
     array X_inf{230, 50, 20};
     array X_sup{300, 60, 40}; 
     int t_f = 16;
-          
-    arrayInt N = {30,30,30};
-    Simulation(X_inf, X_sup, N, t_f);
+         
+    arrayInt N = {5,5,5};
+    Simulation(ModelFunction1, X_inf, X_sup, N, t_f);
     
     return 0;
 }
