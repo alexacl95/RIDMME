@@ -27,9 +27,11 @@ RIDMME_INTERVAL_AUTODIFF ModelFunction2(INTERVAL_VECTOR & v, int const i){
     //Parameter definition
     double beta = 0.1, gamma = 0.3, mu = 0.01, z = 1;
     //Model functions
-    RIDMME_INTERVAL_AUTODIFF G = 1-Power(x(1)/(x(2)+x(3)+x(1)), z);
-    RIDMME_INTERVAL_AUTODIFF v1 = (1-mu)*x(1)*(1-beta*G) + mu*(x(1)+x(2)+x(3));                
-    RIDMME_INTERVAL_AUTODIFF v2 = (1-mu)*(x(1)*beta*G+x(2)*(1-gamma));
+    RIDMME_INTERVAL_AUTODIFF G1 =  1-Power(1-Power((x(2)/(x(1)+x(2)+x(3))),(x(2)/(x(1)+x(2)))),z);
+    // cout << Inf(G1.grd()) << endl;
+    // RIDMME_INTERVAL_AUTODIFF G = 1-Power(x(1)/(x(2)+x(3)+x(1)), z);
+    RIDMME_INTERVAL_AUTODIFF v1 = (1-mu)*x(1)*(1-beta*G1) + mu*(x(1)+x(2)+x(3));                
+    RIDMME_INTERVAL_AUTODIFF v2 = (1-mu)*(x(1)*beta*G1+x(2)*(1-gamma));
     RIDMME_INTERVAL_AUTODIFF v3 = (1-mu)*(x(3) + x(2)*gamma);
     //Save results
     vector<RIDMME_INTERVAL_AUTODIFF> w(3);

@@ -6,8 +6,30 @@ extern INTERVAL_MATRIX TransposedMul (CONST INTERVAL_VECTOR & a,
                                     CONST INTERVAL_VECTOR & b);
 #endif
 
-RIDMME_INTERVAL_AUTODIFF Power(CONST RIDMME_INTERVAL_AUTODIFF &g, INT p)
-{
+//Log function
+RIDMME_INTERVAL_AUTODIFF Log(CONST RIDMME_INTERVAL_AUTODIFF &g){
+  INT dim = Dimension(g);
+  RIDMME_INTERVAL_AUTODIFF h(dim, FALSE);
+
+  h.fkt() = Log(g.fkt());
+  h.grd() = g.grd()/g.fkt();
+#ifdef AUTODIFF_COMPUTE_HESSIAN
+  if (g.ComputeHessian) {
+    h.hessian() = TransposedMul(g.grd(), g.grd());
+    h.ComputeHessian = TRUE;
+  }
+#endif
+  return h;
+}
+
+RIDMME_INTERVAL_AUTODIFF Log(CONST INTERVAL_AUTODIFF& g){
+  RIDMME_INTERVAL_AUTODIFF h = (RIDMME_INTERVAL_AUTODIFF)g;
+  return Log(h);
+}
+
+
+//Power function of real n
+RIDMME_INTERVAL_AUTODIFF Power(CONST RIDMME_INTERVAL_AUTODIFF &g, INT p){
   INT dim = Dimension(g);
   RIDMME_INTERVAL_AUTODIFF h(dim, FALSE);
 
@@ -22,8 +44,29 @@ RIDMME_INTERVAL_AUTODIFF Power(CONST RIDMME_INTERVAL_AUTODIFF &g, INT p)
   return h;
 }
 
-RIDMME_INTERVAL_AUTODIFF Power(CONST INTERVAL_AUTODIFF& g, INT p)
-{
+RIDMME_INTERVAL_AUTODIFF Power(CONST INTERVAL_AUTODIFF& g, INT p){
   RIDMME_INTERVAL_AUTODIFF h = (RIDMME_INTERVAL_AUTODIFF)g;
   return Power(h, p);
+}
+
+//Power of f(x)^g(x)
+RIDMME_INTERVAL_AUTODIFF Power(CONST RIDMME_INTERVAL_AUTODIFF &g, CONST RIDMME_INTERVAL_AUTODIFF &f){
+  INT dim = Dimension(g);
+  RIDMME_INTERVAL_AUTODIFF h(dim, FALSE);
+
+  h.fkt() = Power(g.fkt(), f.fkt());
+  h.grd() = Power(g.fkt(),f.fkt()-1)*(Log(g.fkt())*g.fkt()*f.grd()+f.fkt()*g.grd());
+#ifdef AUTODIFF_COMPUTE_HESSIAN
+  if (g.ComputeHessian) {
+    h.hessian() = (Power(g.fkt(), 1) * g.hessian() + TransposedMul (g.grd(), g.grd()));
+    h.ComputeHessian = TRUE;
+  }
+#endif
+  return h;
+}
+
+RIDMME_INTERVAL_AUTODIFF Power(CONST INTERVAL_AUTODIFF& g, CONST RIDMME_INTERVAL_AUTODIFF &f){
+  RIDMME_INTERVAL_AUTODIFF h = (RIDMME_INTERVAL_AUTODIFF)g;
+  RIDMME_INTERVAL_AUTODIFF h1 = (RIDMME_INTERVAL_AUTODIFF)f;
+  return Power(h, h1);
 }
