@@ -16,10 +16,11 @@ int main(){
     // Intervals for model states
     array X_inf{230, 50, 20};
     array X_sup{300, 60, 40}; 
-    int t_f = 16;
+    
+    int t_f = 2;
          
-    arrayInt N = {5,5,5};
-    Simulation(ModelFunction1, X_inf, X_sup, N, t_f);
+    arrayInt N = {1,1,1};
+    Simulation(ModelFunction2, X_inf, X_sup, N, t_f);
     
     return 0;
 }

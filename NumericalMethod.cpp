@@ -1,7 +1,7 @@
 #include "NumericalMethod.h"
 
 void MixMonotonicityMethod(
-    INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, int const),
+    RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, int const),
     double t,
     array& x_low, array& x_up,
     array p_low, array p_up,
@@ -95,7 +95,7 @@ void MixMonotonicityMethod(
     PrintArray(x_up);
 }
 
-void Simulation(INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, int const), array X_inf, array X_sup, arrayInt N, int t_f){
+void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, int const), array X_inf, array X_sup, arrayInt N, int t_f){
     
     int n_x = X_inf.size();
     
@@ -107,11 +107,12 @@ void Simulation(INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, int const), array X_i
     Results_up[0] = X_sup;
 
     for (int i = 1; i < t_f; i++){
-        cout << "Iteration: " << i <<endl;
+        cout << "Iteration: " << i << endl;
 
         //Subdivision process of the states
         matrix X_sub = NonUniformSubdivision(X_inf, X_sup, N);
         matrixInt allPerms = generateAllPermutations(N);
+        cout << "Number of subdivisions:"<< allPerms.size() <<endl;
         
         //Calculation of refined Jacobian
         matrix Jx_inf(n_x,array(n_x)), Jx_sup(n_x,array(n_x));

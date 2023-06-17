@@ -1,6 +1,6 @@
 #include "AutomaticDifferentiation.h"
 
-void AutoDiffModel(INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, int const), array X_inf, array X_sup, matrix& GrdInf, matrix& GrdSup){   
+void AutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, int const), array X_inf, array X_sup, matrix& GrdInf, matrix& GrdSup){   
     int n_x = X_inf.size();
     INTERVAL_VECTOR x(n_x);
     INTERVAL_VECTOR Grd(n_x);
@@ -21,7 +21,7 @@ void AutoDiffModel(INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, int const), array 
     }
 }
 
-void MultipleAutoDiffModel(INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, int const), matrix X_sub, matrixInt allPerms, arrayInt N, matrix& Jx_inf, matrix& Jx_sup){
+void MultipleAutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, int const), matrix X_sub, matrixInt allPerms, arrayInt N, matrix& Jx_inf, matrix& Jx_sup){
 
     int NumPers = allPerms.size();
     int n_x = allPerms[0].size();
@@ -52,7 +52,7 @@ void MultipleAutoDiffModel(INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, int const)
     Jx_sup = GrdSup;
 }
 
-void ToDoubleEvaluationModel(INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, int const), double t, array& x, array p){
+void ToDoubleEvaluationModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, int const), double t, array& x, array p){
     int n_x = x.size();
     INTERVAL_VECTOR X(n_x);
     for (int i = 0; i < n_x; i++){
