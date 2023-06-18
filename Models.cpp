@@ -1,7 +1,7 @@
 #include "Models.h"
 #include "RIDMME_Interval_Autodiff.h"
 
-RIDMME_INTERVAL_AUTODIFF ModelFunction1(INTERVAL_VECTOR & v, int const i){
+RIDMME_INTERVAL_AUTODIFF ModelFunction1(INTERVAL_VECTOR & v, INTERVAL_VECTOR& P, int const i){
     RIDMME_INTERVAL_AUTODIFF x(v);
     //Parameter definition
     double beta, gamma, mu;

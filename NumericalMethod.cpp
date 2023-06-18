@@ -1,7 +1,7 @@
 #include "NumericalMethod.h"
 
 void MixMonotonicityMethod(
-    RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, int const),
+    RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const),
     double t,
     array& x_low, array& x_up,
     array p_low, array p_up,
@@ -95,13 +95,14 @@ void MixMonotonicityMethod(
     PrintArray(x_up);
 }
 
-void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, int const), array X_inf, array X_sup, arrayInt N, int t_f){
+void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const), array X_inf, array X_sup, array P_inf, array P_sup, arrayInt N, int t_f){
     
     int n_x = X_inf.size();
-    
+    int n_p = P_inf.size();
+
     matrix Results_low(t_f,array(n_x)), Results_up(t_f,array(n_x));
-    matrix Jp_inf(n_x,array(n_x)),Jp_sup(n_x,array(n_x));
-    array P_inf(n_x), P_sup(n_x);
+    matrix Jp_inf(n_x,array(n_p)),Jp_sup(n_x,array(n_p));
+    // array P_inf(n_x), P_sup(n_x);
 
     Results_low[0] = X_inf;
     Results_up[0] = X_sup;
@@ -110,13 +111,14 @@ void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, int const), ar
         cout << "Iteration: " << i << endl;
 
         //Subdivision process of the states
-        matrix X_sub = NonUniformSubdivision(X_inf, X_sup, N);
+        matrix X_sub = NonUniformSubdivision(X_inf, X_sup, P_inf, P_sup, N);
+
         matrixInt allPerms = generateAllPermutations(N);
         cout << "Number of subdivisions:"<< allPerms.size() <<endl;
         
         //Calculation of refined Jacobian
         matrix Jx_inf(n_x,array(n_x)), Jx_sup(n_x,array(n_x));
-        MultipleAutoDiffModel(fnc, X_sub, allPerms, N, Jx_inf, Jx_sup);
+        MultipleAutoDiffModel(fnc, X_sub, allPerms, N, Jx_inf, Jx_sup, Jp_inf, Jp_sup);
        
         //mixed monotonicity numerical method
         MixMonotonicityMethod(fnc, i,

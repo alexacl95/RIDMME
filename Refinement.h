@@ -8,7 +8,7 @@
 #include <numeric>
 #include "Matrix.h"
 
-matrix NonUniformSubdivision(array X_inf, array X_sup,arrayInt& N);
+matrix NonUniformSubdivision(array X_inf, array X_sup, array P_inf, array P_sup, arrayInt& N);
 matrixInt generateAllPermutations(arrayInt& N);
 
 

@@ -1,7 +1,7 @@
 #include "Refinement.h"
 
 
-matrix NonUniformSubdivision(array X_inf, array X_sup, arrayInt& N){
+matrix NonUniformSubdivision(array X_inf, array X_sup, array P_inf, array P_sup, arrayInt& N){
     matrix X_sub;
     matrix X;
     MergeTwoArray(X_inf, X_sup, X);
