@@ -2,16 +2,17 @@
 #include "RIDMME_Interval_Autodiff.h"
 
 RIDMME_INTERVAL_AUTODIFF ModelFunction1(INTERVAL_VECTOR & v, INTERVAL_VECTOR& P, int const i){
-    RIDMME_INTERVAL_AUTODIFF x(v);
+    // RIDMME_INTERVAL_AUTODIFF x(v);
     RIDMME_INTERVAL_AUTODIFF p(P);
+    RIDMME_INTERVAL_AUTODIFF x = MergeTwoIntervalArr(v, P);
     //Parameter definition
     double beta, gamma, mu;
     beta = 0.1;
     gamma = 0.3;
     mu = 0.01;
     //Model functions
-    RIDMME_INTERVAL_AUTODIFF v1 = (1-mu)*x(1)*(1-beta*(x(2)/(x(1)+x(2)+x(3)))) + mu*(x(1)+x(2)+x(3));                
-    RIDMME_INTERVAL_AUTODIFF v2 = (1-mu)*(x(1)*beta*(x(2)/(x(1)+x(2)+x(3)))+x(2)*(1-gamma));
+    RIDMME_INTERVAL_AUTODIFF v1 = (1-mu)*x(1)*(1-x(4)*(x(2)/(x(1)+x(2)+x(3)))) + mu*(x(1)+x(2)+x(3));                
+    RIDMME_INTERVAL_AUTODIFF v2 = (1-mu)*(x(1)*x(4)*(x(2)/(x(1)+x(2)+x(3)))+x(2)*(1-gamma));
     RIDMME_INTERVAL_AUTODIFF v3 = (1-mu)*(x(3) + x(2)*gamma);
     //Save results
     vector<RIDMME_INTERVAL_AUTODIFF> w(3);

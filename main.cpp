@@ -21,9 +21,9 @@ int main(){
     // array P_sup{0.1, 0.3, 0.01};
 
     array P_inf{0.1};
-    array P_sup{0.15}; 
+    array P_sup{0.3}; 
     
-    int t_f = 20;
+    int t_f = 5;
          
     arrayInt N = {5,5,5,5};
     Simulation(ModelFunction1, X_inf, X_sup, P_inf, P_sup, N, t_f);

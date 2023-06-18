@@ -17,8 +17,8 @@ void AutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&,INTERVAL_VEC
     INTERVAL_VECTOR GrdP(n_x);
     
     if(n_p!=0){
-        INTERVAL_VECTOR p(n_p);
-        INTERVAL_VECTOR GrdP(n_x);
+        // INTERVAL_VECTOR p(n_p);
+        // INTERVAL_VECTOR GrdP(n_x);
 
         GrdInfP.resize(n_x), GrdSupP.resize(n_x);
         //Save inf and sup state intervals into INTERVAL
@@ -27,7 +27,7 @@ void AutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&,INTERVAL_VEC
         }  
             //Calculation of inf and sup Jacobian values
         for (int i = 0; i < n_x; i++){
-            GrdP = GradientValue(fnc(x, p, i));
+            GrdP(i+1) = GradientValue(fnc(x, p, i))(n_x+n_p+1+i);
             GrdInfP[i].resize(n_p), GrdSupP[i].resize(n_p); 
             for(int j = 0; j < n_p; j++){
                 GrdInfP[i][j] = Inf(GrdP(j+1));
@@ -41,7 +41,9 @@ void AutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&,INTERVAL_VEC
         GrdSupP = zeros;
     }
     for (int i = 0; i < n_x; i++){
-        Grd = GradientValue(fnc(x, p, i));
+        for (int j = 1; j <= n_x; j++){
+            Grd(j) = GradientValue(fnc(x, p, i))(j);
+        }
         GrdInf[i].resize(n_x), GrdSup[i].resize(n_x); 
         for(int j = 0; j < n_x; j++){
             GrdInf[i][j] = Inf(Grd(j+1));
@@ -115,4 +117,17 @@ void ToDoubleEvaluationModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, I
         Sol[i] = Inf(FunctionValue(fnc(X,P,i)));
     }    
     x = Sol;
+}
+
+RIDMME_INTERVAL_AUTODIFF MergeTwoIntervalArr(INTERVAL_VECTOR& v, INTERVAL_VECTOR& P){
+    auto FactorsSize = Dimension(v)+Dimension(P);
+    INTERVAL_VECTOR Sol(FactorsSize);
+
+    for(int i = 0; i < Dimension(v); i++){
+        Sol(i+1) = v(i+1);
+    }
+    for(int i = 0; i < Dimension(P); i++){
+        Sol(i+Dimension(v) + 1) = P(i+1);
+    }
+    return Sol;
 }
