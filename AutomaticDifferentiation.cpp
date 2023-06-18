@@ -1,6 +1,7 @@
 #include "AutomaticDifferentiation.h"
 
-void AutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&,INTERVAL_VECTOR&, int const), array X_inf, array X_sup, array P_inf, array P_sup, matrix& GrdInf, matrix& GrdSup){
+void AutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&,INTERVAL_VECTOR&, int const),
+                    array X_inf, array X_sup, array P_inf, array P_sup, matrix& GrdInf, matrix& GrdSup, matrix& GrdInfP, matrix& GrdSupP){
     int n_x = X_inf.size();
     INTERVAL_VECTOR x(n_x);
     INTERVAL_VECTOR Grd(n_x);
@@ -10,19 +11,37 @@ void AutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&,INTERVAL_VEC
     for (int i = 0; i < n_x; i++){
         x(i+1) = INTERVAL(X_inf[i], X_sup[i]);
     }    
+
     int n_p = P_inf.size();
     INTERVAL_VECTOR p(n_p);
-    INTERVAL_VECTOR GrdP(n_p);
+    INTERVAL_VECTOR GrdP(n_x);
+    
+    if(n_p!=0){
+        INTERVAL_VECTOR p(n_p);
+        INTERVAL_VECTOR GrdP(n_x);
 
-    GrdInf.resize(n_p), GrdSup.resize(n_p);
-    //Save inf and sup state intervals into INTERVAL
-    for (int i = 0; i < n_p; i++){
-        p(i+1) = INTERVAL(P_inf[i], P_sup[i]);
-    }    
-
-    //Calculation of inf and sup Jacobian values
+        GrdInfP.resize(n_x), GrdSupP.resize(n_x);
+        //Save inf and sup state intervals into INTERVAL
+        for (int i = 0; i < n_p; i++){
+            p(i+1) = INTERVAL(P_inf[i], P_sup[i]);
+        }  
+            //Calculation of inf and sup Jacobian values
+        for (int i = 0; i < n_x; i++){
+            GrdP = GradientValue(fnc(x, p, i));
+            GrdInfP[i].resize(n_p), GrdSupP[i].resize(n_p); 
+            for(int j = 0; j < n_p; j++){
+                GrdInfP[i][j] = Inf(GrdP(j+1));
+                GrdSupP[i][j] = Sup(GrdP(j+1));
+            }
+        }        
+    }else{
+        INTERVAL_VECTOR p(n_x);
+        matrix zeros(n_x);
+        GrdInfP = zeros;
+        GrdSupP = zeros;
+    }
     for (int i = 0; i < n_x; i++){
-        Grd = GradientValue (fnc(x, p, i));
+        Grd = GradientValue(fnc(x, p, i));
         GrdInf[i].resize(n_x), GrdSup[i].resize(n_x); 
         for(int j = 0; j < n_x; j++){
             GrdInf[i][j] = Inf(Grd(j+1));
@@ -51,18 +70,26 @@ void MultipleAutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INT
     matrix GrdInf(n_x, array(n_x, numeric_limits<double>::infinity()));
     matrix GrdSup(n_x, array(n_x, -numeric_limits<double>::infinity()));
 
+    matrix GrdInfP(n_x, array(n_p, numeric_limits<double>::infinity()));
+    matrix GrdSupP(n_x, array(n_p, -numeric_limits<double>::infinity()));
+
     N = getCumulativeSum(N);
 
     for (int i = 0; i < NumPers; i++){
         GrdInf_temp = GrdInf;
         GrdSup_temp = GrdSup;
         arrayInt row = allPerms[i];
-        for(int j = 0; j < n_x; j++){
+        for(int j = 0; j < n_x+n_p; j++){
             int idx = row[j];
-            X_inf[j] = X_sub[N[j]+idx-1][0];
-            X_sup[j] = X_sub[N[j]+idx-1][1];
+            if(j<n_x){
+                X_inf[j] = X_sub[N[j]+idx-1][0];
+                X_sup[j] = X_sub[N[j]+idx-1][1];
+            }else{
+                P_inf[j-n_x] = X_sub[N[j]+idx-1][0];
+                P_sup[j-n_x] = X_sub[N[j]+idx-1][1];
+            }            
         }
-        AutoDiffModel(fnc, X_inf, X_sup, P_inf, P_sup, GrdInf, GrdSup);
+        AutoDiffModel(fnc, X_inf, X_sup, P_inf, P_sup, GrdInf, GrdSup, GrdInfP, GrdSupP);
         GrdInf = combineMatrices(GrdInf_temp, GrdInf, 0);
         GrdSup = combineMatrices(GrdSup_temp, GrdSup, 1);        
     }    

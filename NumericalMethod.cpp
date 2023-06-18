@@ -99,10 +99,13 @@ void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTO
     
     int n_x = X_inf.size();
     int n_p = P_inf.size();
+    int n_f = n_x + n_p;
 
     matrix Results_low(t_f,array(n_x)), Results_up(t_f,array(n_x));
     matrix Jp_inf(n_x,array(n_p)),Jp_sup(n_x,array(n_p));
     // array P_inf(n_x), P_sup(n_x);
+
+    array Factor_inf(n_f), Factor_sup(n_f);
 
     Results_low[0] = X_inf;
     Results_up[0] = X_sup;
@@ -111,7 +114,9 @@ void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTO
         cout << "Iteration: " << i << endl;
 
         //Subdivision process of the states
-        matrix X_sub = NonUniformSubdivision(X_inf, X_sup, P_inf, P_sup, N);
+        AppTwoArray(X_inf, P_inf, Factor_inf);
+        AppTwoArray(X_sup, P_sup, Factor_sup);
+        matrix X_sub = NonUniformSubdivision(Factor_inf, Factor_sup, N);
 
         matrixInt allPerms = generateAllPermutations(N);
         cout << "Number of subdivisions:"<< allPerms.size() <<endl;

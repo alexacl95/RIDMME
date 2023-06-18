@@ -37,6 +37,13 @@ void MergeTwoArray(array X_inf, array X_sup, matrix& X){
     }
 }
 
+void AppTwoArray(array x1, array x2, array& combinedArray){
+    combinedArray = x1;
+    if(x2.size()!=0){
+    combinedArray.insert(combinedArray.end(), x2.begin(), x2.end());
+    }
+}
+
 arrayInt getCumulativeSum(arrayInt &arr){
    arrayInt cumulativeSum{0};
    for(int i = 0; i < arr.size(); i++) {

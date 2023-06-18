@@ -1,10 +1,10 @@
 #include "Refinement.h"
 
 
-matrix NonUniformSubdivision(array X_inf, array X_sup, array P_inf, array P_sup, arrayInt& N){
-    matrix X_sub;
+matrix NonUniformSubdivision(array Factor_inf, array Factor_sup, arrayInt& N){
+    matrix Factor_sub;
     matrix X;
-    MergeTwoArray(X_inf, X_sup, X);
+    MergeTwoArray(Factor_inf, Factor_sup, X);
     int n_x = X.size();
 
     for (int i = 0; i < n_x; i++) {
@@ -14,10 +14,10 @@ matrix NonUniformSubdivision(array X_inf, array X_sup, array P_inf, array P_sup,
         for (int j = 0; j < N[i]; j++) {
             double lower_bound = Xi[0] + j * w_sub;
             double upper_bound = Xi[0] + (j + 1) * w_sub;
-            X_sub.push_back({ lower_bound, upper_bound });
+            Factor_sub.push_back({ lower_bound, upper_bound });
         }
     }
-    return X_sub;
+    return Factor_sub;
 }
 
 matrixInt generateAllPermutations(arrayInt& N) {

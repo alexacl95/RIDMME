@@ -3,6 +3,7 @@
 
 RIDMME_INTERVAL_AUTODIFF ModelFunction1(INTERVAL_VECTOR & v, INTERVAL_VECTOR& P, int const i){
     RIDMME_INTERVAL_AUTODIFF x(v);
+    RIDMME_INTERVAL_AUTODIFF p(P);
     //Parameter definition
     double beta, gamma, mu;
     beta = 0.1;
