@@ -136,3 +136,30 @@ void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTO
     //Save results in a csv file
     saveMatricesToCSV(Results_low, Results_up, "Results.csv");
 }
+
+int CheckSimSettings(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const),
+                    array X_inf,array X_sup, array P_inf, array P_sup, arrayInt N){
+
+    if(X_inf.size()!= X_sup.size()){
+        throw invalid_argument("X_low and X_up arrays are not the same length.\nCheck the superior and inferior limits for model states");
+        return -1;
+    }else if (P_inf.size()!= P_sup.size()){
+        throw invalid_argument("P_low and P_up arrays are not the same length.\nCheck the superior and inferior limits for model parameters");
+        return -1;
+    }
+
+    if(N.size() != X_inf.size() + P_inf.size()){
+        throw invalid_argument("Size of subdivision array is not the same as the size of factors (states+parameters).\nCheck: assing one element of N per each state/parameter.");
+        return -1;
+    }
+
+    try {
+        int t_aux = 1;
+        ToDoubleEvaluationModel(fnc, t_aux, X_inf, P_inf);
+    }
+    catch (int param) { 
+            cout << "Check if assigned interval-parameters in Models.cpp match with the passed intervals." << endl;
+            return -1;
+    }
+    return 0;    
+}
