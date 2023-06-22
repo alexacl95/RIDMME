@@ -164,3 +164,14 @@ void saveMatricesToCSV(const matrix& matrix1, const matrix& matrix2, const strin
 
     file.close();
 }
+
+bool hasNaN(const matrix& Matrix){
+    for (const auto& row : Matrix) {
+        for (const auto& element : row) {
+            if (isnan(element)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}

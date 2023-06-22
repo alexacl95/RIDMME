@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <iostream>
 #include <vector>
@@ -11,6 +12,7 @@
 #include "Models.h"
 
 //Refinement of Interval Discrete Mixed-Monotonic Equations (RIDMME)
+//Note: config/systemFolderConfi/BiasRnd.h comment line 42 to compute Nan-inf.
 
 int main(){
     // Intervals for model states
@@ -31,9 +33,9 @@ int main(){
 
     int t_f = 10;
          
-    arrayInt N = {5,5,5,5,5,5};
+    arrayInt N = {1,1,1,1,1,1};
 
-    CheckSimSettings(ModelFunction1, X_inf, X_sup, P_inf, P_sup, N);
+    
     Simulation(ModelFunction1, X_inf, X_sup, P_inf, P_sup, N, t_f);
     
     return 0;

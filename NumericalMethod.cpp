@@ -96,7 +96,9 @@ void MixMonotonicityMethod(
 }
 
 void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const), array X_inf, array X_sup, array P_inf, array P_sup, arrayInt N, int t_f){
-    
+    //Check that user 
+    CheckSimSettings(fnc, X_inf, X_sup, P_inf, P_sup, N);
+
     int n_x = X_inf.size();
     int n_p = P_inf.size();
     int n_f = n_x + n_p;
@@ -117,19 +119,20 @@ void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTO
         AppTwoArray(X_inf, P_inf, Factor_inf);
         AppTwoArray(X_sup, P_sup, Factor_sup);
         matrix X_sub = NonUniformSubdivision(Factor_inf, Factor_sup, N);
-
         matrixInt allPerms = generateAllPermutations(N);
         cout << "Number of subdivisions:"<< allPerms.size() <<endl;
         
+        //find if Any Element is a Nan 
+        bool AnyNanElement = false;       
         //Calculation of refined Jacobian
         matrix Jx_inf(n_x,array(n_x)), Jx_sup(n_x,array(n_x));
-        MultipleAutoDiffModel(fnc, X_sub, allPerms, N, Jx_inf, Jx_sup, Jp_inf, Jp_sup);
-       
-        //mixed monotonicity numerical method
+        MultipleAutoDiffModel(fnc, X_sub, allPerms, N, Jx_inf, Jx_sup, Jp_inf, Jp_sup, AnyNanElement);
+
+        //mixed monotonicity numerical method;
         MixMonotonicityMethod(fnc, i,
                         X_inf, X_sup, P_inf, P_sup, 
                         Jx_inf,Jx_sup,Jp_inf,Jp_sup);
-        cout << endl; 
+        cout<<endl;
         Results_low[i] = X_inf;
         Results_up[i] = X_sup;
     }
@@ -153,13 +156,5 @@ int CheckSimSettings(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_
         return -1;
     }
 
-    try {
-        int t_aux = 1;
-        ToDoubleEvaluationModel(fnc, t_aux, X_inf, P_inf);
-    }
-    catch (int param) { 
-            cout << "Check if assigned interval-parameters in Models.cpp match with the passed intervals." << endl;
-            return -1;
-    }
     return 0;    
 }

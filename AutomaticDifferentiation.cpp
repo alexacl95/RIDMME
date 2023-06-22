@@ -55,7 +55,7 @@ void AutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&,INTERVAL_VEC
 }
 
 void MultipleAutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const), matrix X_sub, matrixInt allPerms, arrayInt N,
-                        matrix& Jx_inf, matrix& Jx_sup, matrix& Jp_inf, matrix& Jp_sup){
+                        matrix& Jx_inf, matrix& Jx_sup, matrix& Jp_inf, matrix& Jp_sup, bool& AnyNanElement){
 
     int NumPers = allPerms.size();
     int n_x = Jx_inf[0].size();
@@ -99,11 +99,21 @@ void MultipleAutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INT
             }            
         }
         AutoDiffModel(fnc, X_inf, X_sup, P_inf, P_sup, GrdInf, GrdSup, GrdInfP, GrdSupP);
+        
+        //check any element of gradient/jacobian are nan
+        bool GrdInfNan = hasNaN(GrdInf), GrdSupNan = hasNaN(GrdSup), GrdInfPNan = hasNaN(GrdInfP), GrdSupPNan = hasNaN(GrdSupP);
+        if(GrdInfNan||GrdSupNan||GrdInfPNan||GrdSupPNan){
+           cout << "Identified: jacobian or gradient element in NAN" << endl;
+           AnyNanElement = true;
+           return;
+        }
+
         GrdInf = combineMatrices(GrdInf_temp, GrdInf, 0);
         GrdSup = combineMatrices(GrdSup_temp, GrdSup, 1);
 
         GrdInfP = combineMatrices(GrdInfP_temp, GrdInfP, 0);
-        GrdSupP = combineMatrices(GrdSupP_temp, GrdSupP, 1);         
+        GrdSupP = combineMatrices(GrdSupP_temp, GrdSupP, 1);      
+        
     }    
     Jx_inf = GrdInf;
     Jx_sup = GrdSup;
