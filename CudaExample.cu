@@ -9,44 +9,61 @@
 #include <vector>
 #include "AutoDiff/IntervalAutoDiff.h"
 #include "AutoDiff/AutoDiff.h"
+#include "Matrix.h"
 
-__global__
-void saxpy(int n, float a, float *x, float *y)
-{
-  int i = blockIdx.x*blockDim.x + threadIdx.x;
-  if (i < n) y[i] = a*x[i] + y[i];
+
+// Kernel function for vector sum
+__global__ void vectorSumKernel(const float* input1, const float* input2, float* output, size_t size) {
+    size_t idx = blockIdx.x * blockDim.x + threadIdx.x;
+    if (idx < size) {
+        output[idx] = input1[idx] + input2[idx];
+    }
 }
 
-int main(void)
-{
-  int N = 1<<20;
-  float *x, *y, *d_x, *d_y;
-  x = (float*)malloc(N*sizeof(float));
-  y = (float*)malloc(N*sizeof(float));
+// Host function for vector sum using CUDA
+void vectorSumCUDA(const std::vector<float>& vec1, const std::vector<float>& vec2, std::vector<float>& result) {
+    INTERVAL EXP(1,1);
+    size_t size = vec1.size();
+    float* deviceInput1;
+    float* deviceInput2;
+    float* deviceOutput;
 
-  cudaMalloc(&d_x, N*sizeof(float)); 
-  cudaMalloc(&d_y, N*sizeof(float));
+    // Allocate memory on the GPU
+    cudaMalloc(&deviceInput1, size * sizeof(float));
+    cudaMalloc(&deviceInput2, size * sizeof(float));
+    cudaMalloc(&deviceOutput, size * sizeof(float));
 
-  for (int i = 0; i < N; i++) {
-    x[i] = 1.0f;
-    y[i] = 2.0f;
-  }
+    // Copy input vectors from host to device
+    cudaMemcpy(deviceInput1, vec1.data(), size * sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(deviceInput2, vec2.data(), size * sizeof(float), cudaMemcpyHostToDevice);
 
-  cudaMemcpy(d_x, x, N*sizeof(float), cudaMemcpyHostToDevice);
-  cudaMemcpy(d_y, y, N*sizeof(float), cudaMemcpyHostToDevice);
+    // Launch the kernel
+    int threadsPerBlock = 256;
+    int numBlocks = (size + threadsPerBlock - 1) / threadsPerBlock;
+    vectorSumKernel<<<numBlocks, threadsPerBlock>>>(deviceInput1, deviceInput2, deviceOutput, size);
 
-  // Perform SAXPY on 1M elements
-  saxpy<<<(N+255)/256, 256>>>(N, 2.0f, d_x, d_y);
+    // Copy result from device to host
+    cudaMemcpy(result.data(), deviceOutput, size * sizeof(float), cudaMemcpyDeviceToHost);
 
-  cudaMemcpy(y, d_y, N*sizeof(float), cudaMemcpyDeviceToHost);
+    // Free memory on the GPU
+    cudaFree(deviceInput1);
+    cudaFree(deviceInput2);
+    cudaFree(deviceOutput);
+}
 
-  float maxError = 0.0f;
-  for (int i = 0; i < N; i++)
-    maxError = max(maxError, abs(y[i]-4.0f));
-  printf("Max error: %f\n", maxError);
+int main() {
+    std::vector<float> vec1 = {1.0f, 2.0f, 3.0f, 4.0f};
+    std::vector<float> vec2 = {0.5f, 1.5f, 2.5f, 3.5f};
+    std::vector<float> result(vec1.size());
 
-  cudaFree(d_x);
-  cudaFree(d_y);
-  free(x);
-  free(y);
+    vectorSumCUDA(vec1, vec2, result);
+
+    // Print the result
+    std::cout << "Result: ";
+    for (float value : result) {
+        std::cout << value << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
 }

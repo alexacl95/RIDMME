@@ -175,3 +175,9 @@ bool hasNaN(const matrix& Matrix){
     }
     return false;
 }
+
+double* vectorToPrimVector(const array& vec) {
+    double* arr = new double[vec.size()];
+    std::copy(vec.begin(), vec.end(), arr);
+    return arr;
+}

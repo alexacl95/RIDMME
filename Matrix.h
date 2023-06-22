@@ -27,5 +27,6 @@ array matrixVectorMultiply(const matrix& Matrix, const array& Array);
 void saveMatrixToCSV(const matrix& Matrix, const string& filename);
 void saveMatricesToCSV(const matrix& matrix1, const matrix& matrix2, const string& filename);
 bool hasNaN(const matrix& Matrix);
+double* vectorToPrimVector(const array& vec);
 
 #endif

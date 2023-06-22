@@ -100,7 +100,7 @@ void MultipleAutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INT
         }
         AutoDiffModel(fnc, X_inf, X_sup, P_inf, P_sup, GrdInf, GrdSup, GrdInfP, GrdSupP);
         
-        //check any element of gradient/jacobian are nan
+        //check any element of gradient/jacobian are Nan
         bool GrdInfNan = hasNaN(GrdInf), GrdSupNan = hasNaN(GrdSup), GrdInfPNan = hasNaN(GrdInfP), GrdSupPNan = hasNaN(GrdSupP);
         if(GrdInfNan||GrdSupNan||GrdInfPNan||GrdSupPNan){
            cout << "Identified: jacobian or gradient element in NAN" << endl;
