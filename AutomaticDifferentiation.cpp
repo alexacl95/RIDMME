@@ -79,42 +79,46 @@ void MultipleAutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INT
 
     N = getCumulativeSum(N);
 
-    for (int i = 0; i < NumPers; i++){
+    // #pragma acc parallel 
+    // {
+    //     #pragma acc loop
+        for (int i = 0; i < NumPers; i++){
+            cout<<i<<endl;
+            GrdInf_temp = GrdInf;
+            GrdSup_temp = GrdSup;
+            
+            GrdInfP_temp = GrdInfP;
+            GrdSupP_temp = GrdSupP;
 
-        GrdInf_temp = GrdInf;
-        GrdSup_temp = GrdSup;
-        
-        GrdInfP_temp = GrdInfP;
-        GrdSupP_temp = GrdSupP;
+            arrayInt row = allPerms[i];
+            for(int j = 0; j < n_x+n_p; j++){
+                int idx = row[j];
+                if(j<n_x){
+                    X_inf[j] = X_sub[N[j]+idx-1][0];
+                    X_sup[j] = X_sub[N[j]+idx-1][1];
+                }else{
+                    P_inf[j-n_x] = X_sub[N[j]+idx-1][0];
+                    P_sup[j-n_x] = X_sub[N[j]+idx-1][1];
+                }            
+            }
+            AutoDiffModel(fnc, X_inf, X_sup, P_inf, P_sup, GrdInf, GrdSup, GrdInfP, GrdSupP);
+            
+            //check any element of gradient/jacobian are Nan
+            bool GrdInfNan = hasNaN(GrdInf), GrdSupNan = hasNaN(GrdSup), GrdInfPNan = hasNaN(GrdInfP), GrdSupPNan = hasNaN(GrdSupP);
+            if(GrdInfNan||GrdSupNan||GrdInfPNan||GrdSupPNan){
+            cout << "Identified: jacobian or gradient element in NAN" << endl;
+            AnyNanElement = true;
+            return;
+            }
 
-        arrayInt row = allPerms[i];
-        for(int j = 0; j < n_x+n_p; j++){
-            int idx = row[j];
-            if(j<n_x){
-                X_inf[j] = X_sub[N[j]+idx-1][0];
-                X_sup[j] = X_sub[N[j]+idx-1][1];
-            }else{
-                P_inf[j-n_x] = X_sub[N[j]+idx-1][0];
-                P_sup[j-n_x] = X_sub[N[j]+idx-1][1];
-            }            
-        }
-        AutoDiffModel(fnc, X_inf, X_sup, P_inf, P_sup, GrdInf, GrdSup, GrdInfP, GrdSupP);
-        
-        //check any element of gradient/jacobian are Nan
-        bool GrdInfNan = hasNaN(GrdInf), GrdSupNan = hasNaN(GrdSup), GrdInfPNan = hasNaN(GrdInfP), GrdSupPNan = hasNaN(GrdSupP);
-        if(GrdInfNan||GrdSupNan||GrdInfPNan||GrdSupPNan){
-           cout << "Identified: jacobian or gradient element in NAN" << endl;
-           AnyNanElement = true;
-           return;
-        }
+            GrdInf = combineMatrices(GrdInf_temp, GrdInf, 0);
+            GrdSup = combineMatrices(GrdSup_temp, GrdSup, 1);
 
-        GrdInf = combineMatrices(GrdInf_temp, GrdInf, 0);
-        GrdSup = combineMatrices(GrdSup_temp, GrdSup, 1);
-
-        GrdInfP = combineMatrices(GrdInfP_temp, GrdInfP, 0);
-        GrdSupP = combineMatrices(GrdSupP_temp, GrdSupP, 1);      
-        
-    }    
+            GrdInfP = combineMatrices(GrdInfP_temp, GrdInfP, 0);
+            GrdSupP = combineMatrices(GrdSupP_temp, GrdSupP, 1);      
+            
+        }   
+    // } 
     Jx_inf = GrdInf;
     Jx_sup = GrdSup;
     
