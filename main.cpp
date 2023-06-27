@@ -33,7 +33,7 @@ int main(){
 
     int t_f = 10;
          
-    arrayInt N = {5,5,5,5,5,5};
+    arrayInt N = {2,2,2,2,2,2};
 
     
     Simulation(ModelFunction1, X_inf, X_sup, P_inf, P_sup, N, t_f);

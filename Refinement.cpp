@@ -36,3 +36,19 @@ matrixInt generateAllPermutations(arrayInt& N) {
     return allPerms;
 }
 
+void ReduceN(arrayInt& N, arrayInt& N0, int TimesN0, double PercentN){
+    arrayInt idx_N;
+    for (size_t i = 0; i < N.size(); ++i) {
+        if (N[i] >= TimesN0 * N0[i]) {
+            idx_N.push_back(i);
+        }
+    }
+    if (!idx_N.empty()) {
+        for (int idx : idx_N) {
+            N[idx] = ceil(PercentN * N[idx]);
+        }
+    }
+}
+
+void refinementIteration(){
+}

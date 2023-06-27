@@ -14,6 +14,8 @@ using matrix = vector<array>;
 using arrayInt = vector<int>;
 using matrixInt = vector<arrayInt>;
 
+using arrayBool = vector<bool>;
+
 void PrintMatrix(matrix& vec);
 void PrintMatrixInt(matrixInt& vec);
 void PrintArray(array& vec);
@@ -28,5 +30,6 @@ void saveMatrixToCSV(const matrix& Matrix, const string& filename);
 void saveMatricesToCSV(const matrix& matrix1, const matrix& matrix2, const string& filename);
 bool hasNaN(const matrix& Matrix);
 double* vectorToPrimVector(const array& vec);
+arrayBool checkColumnsForNaN(const matrix& Matrix, const matrix& Matrix2);
 
 #endif
