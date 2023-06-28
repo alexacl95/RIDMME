@@ -113,11 +113,11 @@ void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTO
     Results_low[0] = X_inf;
     Results_up[0] = X_sup;
 
-    //find if Any Element is a Nan 
-    vector <bool> AnyNanElement(n_x,false);   
-
     for (int i = 1; i < t_f; i++){
         cout << "Iteration: " << i << endl;
+
+        //find if Any Element is a Nan 
+        vector <bool> AnyNanElement(n_x,false);   
 
         SingleSimulation(fnc, X_inf, X_sup, P_inf, P_sup, N, t_f, i, AnyNanElement);
         
@@ -125,12 +125,11 @@ void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTO
         Results_up[i] = X_sup;
 
         //Adapatative Refinement
-        
         int Counter = 0;
-        
         ReduceN(N, N0, 3, 0.8);
 
         while(any_of(AnyNanElement.begin(), AnyNanElement.end(), [](bool value) { return value; }) && Counter < 2){
+
             cout << "Starting refinement process" << endl;
 
             RefinementIteration(X_inf, X_sup, Results_low, Results_up, N, i,
@@ -140,34 +139,15 @@ void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTO
             SingleSimulation(fnc, X_inf, X_sup, P_inf, P_sup, N, t_f, i, AnyNanElement);  
 
             Results_low[i] = X_inf;
-            Results_up[i] = X_sup;            
-        }
-
-        IterationRep[i] =+ 1;
-        
+            Results_up[i] = X_sup;  
+               
+            IterationRep[i] =+ 1;       
+        }       
         //Finishing Refinement
     }
+    cout << "Finished!" << endl;
     //Save results in a csv file
     saveMatricesToCSV(Results_low, Results_up, "Results.csv");
-}
-
-int CheckSimSettings(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const),
-                    array X_inf,array X_sup, array P_inf, array P_sup, arrayInt N){
-
-    if(X_inf.size()!= X_sup.size()){
-        throw invalid_argument("X_low and X_up arrays are not the same length.\nCheck the superior and inferior limits for model states");
-        return -1;
-    }else if (P_inf.size()!= P_sup.size()){
-        throw invalid_argument("P_low and P_up arrays are not the same length.\nCheck the superior and inferior limits for model parameters");
-        return -1;
-    }
-
-    if(N.size() != X_inf.size() + P_inf.size()){
-        throw invalid_argument("Size of subdivision array is not the same as the size of factors (states+parameters).\nCheck: assing one element of N per each state/parameter.");
-        return -1;
-    }
-
-    return 0;    
 }
 
 void SingleSimulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const),
@@ -195,4 +175,23 @@ void SingleSimulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL
                     X_inf, X_sup, P_inf, P_sup, 
                     Jx_inf,Jx_sup,Jp_inf,Jp_sup);
     cout<<endl;
+}
+
+int CheckSimSettings(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const),
+                    array X_inf,array X_sup, array P_inf, array P_sup, arrayInt N){
+
+    if(X_inf.size()!= X_sup.size()){
+        throw invalid_argument("X_low and X_up arrays are not the same length.\nCheck the superior and inferior limits for model states");
+        return -1;
+    }else if (P_inf.size()!= P_sup.size()){
+        throw invalid_argument("P_low and P_up arrays are not the same length.\nCheck the superior and inferior limits for model parameters");
+        return -1;
+    }
+
+    if(N.size() != X_inf.size() + P_inf.size()){
+        throw invalid_argument("Size of subdivision array is not the same as the size of factors (states+parameters).\nCheck: assing one element of N per each state/parameter.");
+        return -1;
+    }
+
+    return 0;    
 }

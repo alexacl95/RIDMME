@@ -188,7 +188,6 @@ arrayBool checkColumnsForNaN(const matrix& Matrix, const matrix& Matrix2){
         for (size_t row = 0; row < Matrix.size(); ++row) {
             if (isnan(Matrix[row][col])||isnan(Matrix2[row][col])) {
                 result[col] = true;
-                break;
             }
         }
     }
