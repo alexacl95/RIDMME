@@ -120,6 +120,9 @@ void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTO
         cout << "Iteration: " << i << endl;
 
         SingleSimulation(fnc, X_inf, X_sup, P_inf, P_sup, N, t_f, i, AnyNanElement);
+        
+        Results_low[i] = X_inf;
+        Results_up[i] = X_sup;
 
         //Adapatative Refinement
         
@@ -129,16 +132,13 @@ void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTO
 
         while(any_of(AnyNanElement.begin(), AnyNanElement.end(), [](bool value) { return value; }) && Counter < 2){
             cout << "Starting refinement process" << endl;
-            Counter =+ 1;
-            if(IterationRep[i] >= 2){
-                    Step = Step+1;
-            }else{
-                Step = Step0;
-            }
 
-            refinementIteration();
+            RefinementIteration(X_inf, X_sup, Results_low, Results_up, N, i,
+                        IterationRep, Counter, Step, 
+                        Step0, AnyNanElement, n_x, n_p);
 
-            SingleSimulation(fnc, X_inf, X_sup, P_inf, P_sup, N, t_f, i, AnyNanElement);      
+            SingleSimulation(fnc, X_inf, X_sup, P_inf, P_sup, N, t_f, i, AnyNanElement);  
+
             Results_low[i] = X_inf;
             Results_up[i] = X_sup;            
         }
@@ -146,9 +146,6 @@ void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTO
         IterationRep[i] =+ 1;
         
         //Finishing Refinement
-
-        Results_low[i] = X_inf;
-        Results_up[i] = X_sup;
     }
     //Save results in a csv file
     saveMatricesToCSV(Results_low, Results_up, "Results.csv");
