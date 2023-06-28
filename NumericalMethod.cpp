@@ -132,10 +132,11 @@ void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTO
 
             cout << "Starting refinement process" << endl;
 
+            Counter += 1;
             RefinementIteration(X_inf, X_sup, Results_low, Results_up, N, i,
-                        IterationRep, Counter, Step, 
+                        IterationRep, Step, 
                         Step0, AnyNanElement, n_x, n_p);
-
+            AnyNanElement = vector <bool> (n_x,false); 
             SingleSimulation(fnc, X_inf, X_sup, P_inf, P_sup, N, t_f, i, AnyNanElement);  
 
             Results_low[i] = X_inf;

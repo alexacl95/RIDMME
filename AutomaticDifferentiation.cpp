@@ -81,45 +81,47 @@ void MultipleAutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INT
 
     N = getCumulativeSum(N);
 
-    #pragma acc parallel
-    {
-        #pragma acc loop
+    bool ContinueFlag = true;
+
+    #pragma omp parallel for 
         for (int i = 0; i < NumPers; i++){
+        
+            if(ContinueFlag==true){                
+                arrayInt row = allPerms[i];
+                for(int j = 0; j < n_x+n_p; j++){
+                    int idx = row[j];
+                    if(j<n_x){
+                        X_inf[j] = X_sub[N[j]+idx-1][0];
+                        X_sup[j] = X_sub[N[j]+idx-1][1];
+                    }else{
+                        P_inf[j-n_x] = X_sub[N[j]+idx-1][0];
+                        P_sup[j-n_x] = X_sub[N[j]+idx-1][1];
+                    }            
+                }
+                AutoDiffModel(fnc, X_inf, X_sup, P_inf, P_sup, GrdInf, GrdSup, GrdInfP, GrdSupP);
+                
+                //check any element of gradient/jacobian are Nan
+                arrayBool GrdNan = checkColumnsForNaN(GrdInf, GrdSup);
+                arrayBool GrdPNan = checkColumnsForNaN(GrdInfP, GrdSupP);
 
-            arrayInt row = allPerms[i];
-            for(int j = 0; j < n_x+n_p; j++){
-                int idx = row[j];
-                if(j<n_x){
-                    X_inf[j] = X_sub[N[j]+idx-1][0];
-                    X_sup[j] = X_sub[N[j]+idx-1][1];
-                }else{
-                    P_inf[j-n_x] = X_sub[N[j]+idx-1][0];
-                    P_sup[j-n_x] = X_sub[N[j]+idx-1][1];
-                }            
-            }
-            AutoDiffModel(fnc, X_inf, X_sup, P_inf, P_sup, GrdInf, GrdSup, GrdInfP, GrdSupP);
-            
-            //check any element of gradient/jacobian are Nan
-            arrayBool GrdNan = checkColumnsForNaN(GrdInf, GrdSup);
-            arrayBool GrdPNan = checkColumnsForNaN(GrdInfP, GrdSupP);
-
-            if(any_of(GrdNan.begin(), GrdNan.end(), [](bool value) { return value; })){
-                cout << "Identified: jacobian or gradient element in NAN" << endl;
-                AnyNanElement = GrdNan;
-                return;
-            }else if(any_of(GrdPNan.begin(), GrdPNan.end(), [](bool value) { return value; })){
-                cout << "Identified: jacobian or gradient element in NAN" << endl;
-                AnyNanElement = GrdPNan;
-                return;
-            }            
-
-            GrdInfList[i] = GrdInf;
-            GrdSupList[i] = GrdSup;
-            GrdInfPList[i] = GrdInfP;
-            GrdSupPList[i] = GrdSupP;            
-        }   
-    } 
-
+                if(any_of(GrdNan.begin(), GrdNan.end(), [](bool value) { return value; })){
+                    cout << "Identified: jacobian or gradient element in NAN" << endl;
+                    AnyNanElement = GrdNan;
+                    ContinueFlag = false;
+                }else if(any_of(GrdPNan.begin(), GrdPNan.end(), [](bool value) { return value; })){
+                    cout << "Identified: jacobian or gradient element in NAN" << endl;
+                    AnyNanElement = GrdPNan;
+                    ContinueFlag = false;
+                }
+                GrdInfList[i] = GrdInf;
+                GrdSupList[i] = GrdSup;
+                GrdInfPList[i] = GrdInfP;
+                GrdSupPList[i] = GrdSupP; 
+            }          
+        }        
+    if (ContinueFlag==false){
+        return; 
+    }    
     Jx_inf = findMinMaxMatrix(GrdInfList, 0);
     Jx_sup = findMinMaxMatrix(GrdSupList, 1);
     
