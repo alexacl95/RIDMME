@@ -70,24 +70,21 @@ void MultipleAutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INT
     array P_inf(n_p);
     array P_sup(n_p);
 
-    matrix GrdInf_temp, GrdSup_temp, GrdInfP_temp, GrdSupP_temp;
     matrix GrdInf(n_x, array(n_x, numeric_limits<double>::infinity()));
     matrix GrdSup(n_x, array(n_x, -numeric_limits<double>::infinity()));
 
     matrix GrdInfP(n_x, array(n_p, numeric_limits<double>::infinity()));
     matrix GrdSupP(n_x, array(n_p, -numeric_limits<double>::infinity()));
 
+    matrixList GrdInfList(NumPers), GrdSupList(NumPers);
+    matrixList GrdInfPList(NumPers), GrdSupPList(NumPers);
+
     N = getCumulativeSum(N);
 
-    // #pragma acc parallel 
-    // {
-    //     #pragma acc loop
+    #pragma acc parallel
+    {
+        #pragma acc loop
         for (int i = 0; i < NumPers; i++){
-            GrdInf_temp = GrdInf;
-            GrdSup_temp = GrdSup;
-            
-            GrdInfP_temp = GrdInfP;
-            GrdSupP_temp = GrdSupP;
 
             arrayInt row = allPerms[i];
             for(int j = 0; j < n_x+n_p; j++){
@@ -116,19 +113,18 @@ void MultipleAutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INT
                 return;
             }            
 
-            GrdInf = combineMatrices(GrdInf_temp, GrdInf, 0);
-            GrdSup = combineMatrices(GrdSup_temp, GrdSup, 1);
-
-            GrdInfP = combineMatrices(GrdInfP_temp, GrdInfP, 0);
-            GrdSupP = combineMatrices(GrdSupP_temp, GrdSupP, 1);      
-            
+            GrdInfList[i] = GrdInf;
+            GrdSupList[i] = GrdSup;
+            GrdInfPList[i] = GrdInfP;
+            GrdSupPList[i] = GrdSupP;            
         }   
-    // } 
-    Jx_inf = GrdInf;
-    Jx_sup = GrdSup;
+    } 
+
+    Jx_inf = findMinMaxMatrix(GrdInfList, 0);
+    Jx_sup = findMinMaxMatrix(GrdSupList, 1);
     
-    Jp_inf = GrdInfP;
-    Jp_sup = GrdSupP;
+    Jp_inf = findMinMaxMatrix(GrdInfPList, 0);
+    Jp_sup = findMinMaxMatrix(GrdSupPList, 1);
 }
 
 void ToDoubleEvaluationModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const), double t, array& x, array& p){

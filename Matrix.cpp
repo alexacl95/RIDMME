@@ -193,3 +193,27 @@ arrayBool checkColumnsForNaN(const matrix& Matrix, const matrix& Matrix2){
     }
     return result;
 }
+
+matrix findMinMaxMatrix(const matrixList& matrices, int MinMax){
+    if (matrices.empty()) {
+        return matrix(); // Return an empty matrix if the list is empty
+    }    
+    const size_t numRows = matrices[0].size();
+    const size_t numCols = matrices[0][0].size();
+    
+    matrix minmaxMatrix(numRows, array(numCols, numeric_limits<double>::infinity()));
+    
+    for (const auto& matrix : matrices) {
+        for (size_t row = 0; row < numRows; ++row) {
+            for (size_t col = 0; col < numCols; ++col) {
+                if(MinMax == 0){
+                    minmaxMatrix[row][col] = min(minmaxMatrix[row][col], matrix[row][col]);
+                }else if (MinMax == 1){
+                    minmaxMatrix[row][col] = max(minmaxMatrix[row][col], matrix[row][col]);
+                }
+                
+            }
+        }
+    }    
+    return minmaxMatrix;
+}

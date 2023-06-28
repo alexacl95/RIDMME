@@ -47,8 +47,8 @@ void ReduceN(arrayInt& N, arrayInt& N0, int TimesN0, double PercentN){
         for (int idx : idx_N) {
             N[idx] = ceil(PercentN * N[idx]);
         }
-    }
     cout<<"Reducing N" <<endl;
+    }
 }
 
 void RefinementIteration(array& X_inf, array& X_sup, matrix Results_low, matrix Results_up, arrayInt& N, int& i,

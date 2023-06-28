@@ -5,11 +5,13 @@
 #include <vector>
 #include <fstream>
 #include <cmath>
+#include <algorithm>
 
 using namespace std;
 
 using array = vector<double>;
 using matrix = vector<array>;
+using matrixList = vector<matrix>;
 
 using arrayInt = vector<int>;
 using matrixInt = vector<arrayInt>;
@@ -31,5 +33,5 @@ void saveMatricesToCSV(const matrix& matrix1, const matrix& matrix2, const strin
 bool hasNaN(const matrix& Matrix);
 double* vectorToPrimVector(const array& vec);
 arrayBool checkColumnsForNaN(const matrix& Matrix, const matrix& Matrix2);
-
+matrix findMinMaxMatrix(const matrixList& matrices, int MinMax);
 #endif
