@@ -133,9 +133,13 @@ void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTO
             cout << "Starting refinement process" << endl;
 
             Counter += 1;
-            RefinementIteration(X_inf, X_sup, Results_low, Results_up, N, i,
+            RefinementIteration(N, i,
                         IterationRep, Step, 
                         Step0, AnyNanElement, n_x, n_p);
+
+            X_inf = Results_low[i-1];
+            X_sup = Results_up[i-1];
+
             AnyNanElement = vector <bool> (n_x,false); 
             SingleSimulation(fnc, X_inf, X_sup, P_inf, P_sup, N, t_f, i, AnyNanElement);  
 
@@ -167,8 +171,8 @@ void SingleSimulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL
     cout << "Number of subdivisions:"<< allPerms.size() <<endl;
            
     //Calculation of refined Jacobian
-    matrix Jx_inf(n_x,array(n_x)), Jx_sup(n_x,array(n_x));
-    matrix Jp_inf(n_x,array(n_p)),Jp_sup(n_x,array(n_p));
+    matrix Jx_inf(n_x,array(n_x, numeric_limits<double>::quiet_NaN())), Jx_sup(n_x,array(n_x, numeric_limits<double>::quiet_NaN()));
+    matrix Jp_inf(n_x,array(n_p, numeric_limits<double>::quiet_NaN())), Jp_sup(n_x,array(n_p, numeric_limits<double>::quiet_NaN()));
 
     MultipleAutoDiffModel(fnc, X_sub, allPerms, N, Jx_inf, Jx_sup, Jp_inf, Jp_sup, AnyNanElement);
     //mixed monotonicity numerical method;

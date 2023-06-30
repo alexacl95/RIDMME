@@ -30,6 +30,7 @@ array susVectors(array& array1, array& array2);
 array matrixVectorMultiply(const matrix& Matrix, const array& Array);
 void saveMatrixToCSV(const matrix& Matrix, const string& filename);
 void saveMatricesToCSV(const matrix& matrix1, const matrix& matrix2, const string& filename);
+void saveArrayToCSV(const array& array1, const array& array2, const string& filename);
 bool hasNaN(const matrix& Matrix);
 double* vectorToPrimVector(const array& vec);
 arrayBool checkColumnsForNaN(const matrix& Matrix, const matrix& Matrix2);

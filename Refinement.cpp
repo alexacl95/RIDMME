@@ -51,7 +51,7 @@ void ReduceN(arrayInt& N, arrayInt& N0, int TimesN0, double PercentN){
     }
 }
 
-void RefinementIteration(array& X_inf, array& X_sup, matrix Results_low, matrix Results_up, arrayInt& N, int& i,
+void RefinementIteration(arrayInt& N, int& i,
                          arrayInt IterationRep, int& Step, 
                          int Step0, arrayBool AnyNanElement, int n_x, int n_p ){
 
@@ -74,9 +74,6 @@ void RefinementIteration(array& X_inf, array& X_sup, matrix Results_low, matrix 
         i -= Step;
         cout << "~~~~~~~~~~~~~Back to Iteration: " << i << "~~~~~~~~~~~~~" << endl;
     }
-
-    X_inf = Results_low[i-1];
-    X_sup = Results_up[i-1];
 
     cout << "  ***N = [";
         for (int val : N) {

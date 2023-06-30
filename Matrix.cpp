@@ -164,6 +164,20 @@ void saveMatricesToCSV(const matrix& matrix1, const matrix& matrix2, const strin
 
     file.close();
 }
+void saveArrayToCSV(const array& array1, const array& array2, const string& filename){
+    ofstream file(filename);
+
+    // Write matrix1 to CSV
+    for (const auto& row :array1) {
+        file << row << "," << endl;
+    }
+    // Write matrix2 to CSV
+    for (const auto& row : array2) {
+            file << row << "," << endl;
+    }
+
+    file.close();
+}
 
 bool hasNaN(const matrix& Matrix){
     for (const auto& row : Matrix) {
@@ -201,8 +215,13 @@ matrix findMinMaxMatrix(const matrixList& matrices, int MinMax){
     const size_t numRows = matrices[0].size();
     const size_t numCols = matrices[0][0].size();
     
-    matrix minmaxMatrix(numRows, array(numCols, numeric_limits<double>::infinity()));
-    
+    matrix minmaxMatrix;
+    if(MinMax == 0){
+        minmaxMatrix = matrix(numRows, array(numCols, numeric_limits<double>::infinity()));
+    }else if (MinMax == 1){
+        minmaxMatrix = matrix(numRows, array(numCols, -numeric_limits<double>::infinity()));
+    }
+        
     for (const auto& matrix : matrices) {
         for (size_t row = 0; row < numRows; ++row) {
             for (size_t col = 0; col < numCols; ++col) {
@@ -210,8 +229,7 @@ matrix findMinMaxMatrix(const matrixList& matrices, int MinMax){
                     minmaxMatrix[row][col] = min(minmaxMatrix[row][col], matrix[row][col]);
                 }else if (MinMax == 1){
                     minmaxMatrix[row][col] = max(minmaxMatrix[row][col], matrix[row][col]);
-                }
-                
+                }                
             }
         }
     }    

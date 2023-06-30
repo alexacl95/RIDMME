@@ -10,6 +10,7 @@
 #include "Refinement.h"
 #include "NumericalMethod.h"
 #include "Models.h"
+#include "Montecarlo.h"
 
 //Refinement of Interval Discrete Mixed-Monotonic Equations (RIDMME)
 //Note: config/systemFolderConfi/BiasRnd.h comment line 42 to compute Nan-inf.
@@ -31,11 +32,14 @@ int main(){
     array P_inf{0.1, 0.3, 0.01};
     array P_sup{0.3, 0.6, 0.03};
 
-    int t_f = 60;
+    int t_f = 5;
          
-    arrayInt N = {5,5,5,2,2,2};
+    arrayInt N = {15,15,15,2,2,2};
 
-    Simulation(ModelFunction1, X_inf, X_sup, P_inf, P_sup, N, t_f);
-    
+    Simulation(ModelFunction1, X_inf, X_sup, P_inf, P_sup, N, t_f);    
+
+    int Samples = 1000;
+    MontecarloSets(ModelFunction1, t_f, X_inf, X_sup, P_inf, P_sup, Samples);
+
     return 0;
 }
