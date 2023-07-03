@@ -61,20 +61,6 @@ void MultipleAutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INT
     int n_x = Jx_inf[0].size();
     int n_p = Jp_inf[0].size();
 
-    array Factors_inf(NumPers);
-    array Factors_sup(NumPers);
-
-    array X_inf(n_x);
-    array X_sup(n_x);
-
-    array P_inf(n_p);
-    array P_sup(n_p);
-
-    matrix GrdInf(n_x, array(n_x, numeric_limits<double>::infinity()));
-    matrix GrdSup(n_x, array(n_x, -numeric_limits<double>::infinity()));
-
-    matrix GrdInfP(n_x, array(n_p, numeric_limits<double>::infinity()));
-    matrix GrdSupP(n_x, array(n_p, -numeric_limits<double>::infinity()));
 
     matrixList GrdInfList(NumPers), GrdSupList(NumPers);
     matrixList GrdInfPList(NumPers), GrdSupPList(NumPers);
@@ -85,6 +71,19 @@ void MultipleAutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INT
 
     #pragma omp parallel for 
     for (int i = 0; i < NumPers; i++){   
+
+        array X_inf(n_x);
+        array X_sup(n_x);
+
+        array P_inf(n_p);
+        array P_sup(n_p);
+
+        matrix GrdInf(n_x, array(n_x, 0));
+        matrix GrdSup(n_x, array(n_x, 0));
+
+        matrix GrdInfP(n_x, array(n_p, 0));
+        matrix GrdSupP(n_x, array(n_p, 0));
+
         if(ContinueFlag==true){                
             arrayInt row = allPerms[i];
             for(int j = 0; j < n_x+n_p; j++){
@@ -119,6 +118,8 @@ void MultipleAutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INT
         }          
     }        
     if (ContinueFlag==false){
+        Jx_inf = matrix(n_x,array(n_x, -numeric_limits<double>::infinity()));
+        Jx_sup = matrix(n_x,array(n_x, numeric_limits<double>::infinity())); 
         return; 
     }    
     Jx_inf = findMinMaxMatrix(GrdInfList, 0);
@@ -126,6 +127,8 @@ void MultipleAutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INT
     
     Jp_inf = findMinMaxMatrix(GrdInfPList, 0);
     Jp_sup = findMinMaxMatrix(GrdSupPList, 1);
+
+    cout << "" << endl;
 }
 
 void ToDoubleEvaluationModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const), double t, array& x, array& p){
