@@ -17,8 +17,8 @@
 
 int main(){
     // Intervals for model states
-    array X_inf{230, 50, 20};
-    array X_sup{300, 60, 40};
+    array X_inf{45, 5};
+    array X_sup{36, 20};
 
     // array P_inf{};
     // array P_sup{};
@@ -29,17 +29,17 @@ int main(){
     // array P_inf{0.1, 0.3};
     // array P_sup{0.3, 0.6}; 
 
-    array P_inf{0.1, 0.01};
-    array P_sup{0.3, 0.03};
+    array P_inf{0.5, 0.2};
+    array P_sup{0.8, 0.5};
 
-    int t_f = 25;
+    int t_f = 2;
          
-    arrayInt N = {15,15,15,2,2};
+    arrayInt N = {3,3,3,3};
 
-    Simulation(ModelFunction1, X_inf, X_sup, P_inf, P_sup, N, t_f);    
+    Simulation(ModelExample, X_inf, X_sup, P_inf, P_sup, N, t_f);    
 
     int Samples = 1000;
-    MontecarloSets(ModelFunction1, t_f, X_inf, X_sup, P_inf, P_sup, Samples);
+    MontecarloSets(ModelExample, t_f, X_inf, X_sup, P_inf, P_sup, Samples);
 
     return 0;
 }

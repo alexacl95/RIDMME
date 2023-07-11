@@ -75,3 +75,17 @@ RIDMME_INTERVAL_AUTODIFF LogisticFunction(INTERVAL_VECTOR & v, INTERVAL_VECTOR& 
 
     return result;
 }
+
+RIDMME_INTERVAL_AUTODIFF ModelExample(INTERVAL_VECTOR & v, INTERVAL_VECTOR& P, int const i){
+    RIDMME_INTERVAL_AUTODIFF x = MergeTwoIntervalArr(v, P);
+    //Model functions
+    RIDMME_INTERVAL_AUTODIFF v1 = x(1)*(1-x(4))*(1-x(3)*x(2)/(x(1)+x(2))) + x(4)*(x(1)+x(2));                
+    RIDMME_INTERVAL_AUTODIFF v2 = x(1)*(1-x(4))*(x(3)*x(2)/(x(1)+x(2))) + (1-x(4))*x(2);
+    //Save results
+    vector<RIDMME_INTERVAL_AUTODIFF> w(2);
+    w[0] = v1;
+    w[1] = v2;
+    //Result of the ith state
+    RIDMME_INTERVAL_AUTODIFF result = w[i];
+    return result;
+}
