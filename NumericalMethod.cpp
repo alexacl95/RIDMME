@@ -155,6 +155,36 @@ void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTO
     saveMatricesToCSV(Results_low, Results_up, "Results.csv");
 }
 
+void SimulationMixMon(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const), array X_inf, array X_sup, array P_inf, array P_sup, int t_f){
+    int n_x = X_inf.size();
+    int n_p = P_inf.size();
+    int n_f = n_x + n_p;
+    arrayInt N(n_f,1);
+
+    //Check that user 
+    CheckSimSettings(fnc, X_inf, X_sup, P_inf, P_sup, N); 
+
+    matrix Results_low(t_f,array(n_x)), Results_up(t_f,array(n_x));
+
+    Results_low[0] = X_inf;
+    Results_up[0] = X_sup;
+
+    for (int i = 1; i < t_f; i++){
+        cout << "Iteration: " << i << endl;
+
+        //find if Any Element is a Nan 
+        vector <bool> AnyNanElement(n_x,false);   
+
+        SingleSimulation(fnc, X_inf, X_sup, P_inf, P_sup, N, t_f, i, AnyNanElement);
+        
+        Results_low[i] = X_inf;
+        Results_up[i] = X_sup;
+    }
+    cout << "Finished!" << endl;
+    //Save results in a csv file
+    saveMatricesToCSV(Results_low, Results_up, "ResultsMixMon.csv");
+}
+
 void SingleSimulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const),
                         array& X_inf, array& X_sup, array P_inf, array P_sup, arrayInt N, int t_f, int i, arrayBool& AnyNanElement){
 

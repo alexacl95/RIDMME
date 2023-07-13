@@ -32,11 +32,13 @@ int main(){
     array P_inf{0.2, 0.5};
     array P_sup{0.5, 0.8};
 
-    int t_f = 2;
+    int t_f = 5;
          
-    arrayInt N = {3,3,3,3};
+    arrayInt N = {5,5,5,5};
 
     Simulation(ModelExample, X_inf, X_sup, P_inf, P_sup, N, t_f);    
+
+    SimulationMixMon(ModelExample, X_inf, X_sup, P_inf, P_sup, t_f);
 
     int Samples = 1000;
     MontecarloSets(ModelExample, t_f, X_inf, X_sup, P_inf, P_sup, Samples);
