@@ -24,13 +24,13 @@ double MetricEval(array ydata, array Constraint, int ErrorMetric){
     return Error;
 }
 
-array TimeSeriesError(array (*fnc)(array X_inf, array X_sup), array X_inf, array X_sup, array Constraint, int ErrorMetric){
+array TimeSeriesError(array (*fnc)(array X_inf, array X_sup), matrix X_inf, matrix X_sup, matrix Constraint, int ErrorMetric){
     int t_f = X_inf.size();
     array ydata;
     array Error(t_f,0);
     for(int i = 0; i < t_f; i++){
-        ydata = fnc(X_inf, X_sup);
-        Error[i] = MetricEval(ydata, Constraint, ErrorMetric);
+        ydata = fnc(X_inf[i], X_sup[i]);
+        Error[i] = MetricEval(ydata, Constraint[i], ErrorMetric);
     }
     return Error;
 }

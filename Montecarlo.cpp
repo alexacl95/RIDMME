@@ -12,8 +12,9 @@ double RandN(double low, double up){
 }
 
 void MontecarloSets(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const),
-                                   int& time, const array& x_low, const array& x_up,
-                                   const array& p_low, const array& p_up, int sampleN){
+                                   const array& x_low, const array& x_up,
+                                   const array& p_low, const array& p_up, int sampleN, int& time,
+                                   matrix& Result_inf, matrix& Result_sup){
     cout << "Stariting Montecarlo" << endl;
     int n_x = x_low.size();
     int n_p = p_low.size(); 
@@ -42,10 +43,10 @@ void MontecarloSets(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_V
         }            
     }
 
-    matrix Mon_inf = findMinMaxMatrix(Montecarlo_sim, 0);
-    matrix Mon_sup = findMinMaxMatrix(Montecarlo_sim, 1);
+    Result_inf = findMinMaxMatrix(Montecarlo_sim, 0);
+    Result_sup = findMinMaxMatrix(Montecarlo_sim, 1);
 
-    saveMatricesToCSV(Mon_inf, Mon_sup, "ResultsMontecarlo.csv");
+    saveMatricesToCSV(Result_inf, Result_sup, "ResultsMontecarlo.csv");
 
     cout << "Finished!" << endl;
 }

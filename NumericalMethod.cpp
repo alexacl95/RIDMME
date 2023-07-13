@@ -95,7 +95,8 @@ void MixMonotonicityMethod(
     PrintArray(x_up);
 }
 
-void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const), array X_inf, array X_sup, array P_inf, array P_sup, arrayInt N, int t_f){
+void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const), array X_inf, array X_sup,
+                array P_inf, array P_sup, arrayInt N, int t_f, matrix& Results_low, matrix& Results_up){
     //Check that user 
     CheckSimSettings(fnc, X_inf, X_sup, P_inf, P_sup, N);
 
@@ -107,7 +108,7 @@ void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTO
     int Step = 3;
     int Step0 = Step;
 
-    matrix Results_low(t_f,array(n_x)), Results_up(t_f,array(n_x));
+    // matrix Results_low(t_f,array(n_x)), Results_up(t_f,array(n_x));
     // array P_inf(n_x), P_sup(n_x);
 
     Results_low[0] = X_inf;
@@ -155,7 +156,8 @@ void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTO
     saveMatricesToCSV(Results_low, Results_up, "Results.csv");
 }
 
-void SimulationMixMon(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const), array X_inf, array X_sup, array P_inf, array P_sup, int t_f){
+void SimulationMixMon(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const), array X_inf, array X_sup,
+                        array P_inf, array P_sup, int t_f, matrix& Results_low, matrix& Results_up){
     int n_x = X_inf.size();
     int n_p = P_inf.size();
     int n_f = n_x + n_p;
@@ -164,7 +166,7 @@ void SimulationMixMon(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL
     //Check that user 
     CheckSimSettings(fnc, X_inf, X_sup, P_inf, P_sup, N); 
 
-    matrix Results_low(t_f,array(n_x)), Results_up(t_f,array(n_x));
+    // matrix Results_low(t_f,array(n_x)), Results_up(t_f,array(n_x));
 
     Results_low[0] = X_inf;
     Results_up[0] = X_sup;

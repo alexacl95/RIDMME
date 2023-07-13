@@ -5,6 +5,6 @@
 #include "Matrix.h"
 
 double MetricEval(array ydata, array Constraint, int ErrorMetric);
-array TimeSeriesError(array (*fnc)(array X_inf, array X_sup), array X_inf, array X_sup, array Constraint, int ErrorMetric);
+array TimeSeriesError(array (*fnc)(array X_inf, array X_sup), matrix X_inf, matrix X_sup, matrix Constraint, int ErrorMetric);
 
 #endif

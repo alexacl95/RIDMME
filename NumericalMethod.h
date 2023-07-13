@@ -17,10 +17,12 @@ void MixMonotonicityMethod(
     matrix J_x_low, matrix J_x_up,
     matrix J_p_low, matrix J_p_up
 );
-void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const), array X_inf, array X_sup, array P_inf, array P_sup, arrayInt N, int t_f);
+void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const), array X_inf, array X_sup,
+                    array P_inf, array P_sup, arrayInt N, int t_f, matrix& Results_low, matrix& Results_up);
 int CheckSimSettings(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const),
                     array X_inf,array X_sup, array P_inf, array P_sup, arrayInt N);
 void SingleSimulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const),
-                        array& X_inf, array& X_sup, array P_inf, array P_sup, arrayInt N, int t_f, int i, arrayBool& AnyNanElement);     
-void SimulationMixMon(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const), array X_inf, array X_sup, array P_inf, array P_sup, int t_f);               
+                    array& X_inf, array& X_sup, array P_inf, array P_sup, arrayInt N, int t_f, int i, arrayBool& AnyNanElement);     
+void SimulationMixMon(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const), array X_inf, array X_sup,
+                    array P_inf, array P_sup, int t_f, matrix& Results_low, matrix& Results_up);
 #endif

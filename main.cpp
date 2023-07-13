@@ -11,9 +11,20 @@
 #include "NumericalMethod.h"
 #include "Models.h"
 #include "Montecarlo.h"
+#include "Metrics.h"
 
 //Refinement of Interval Discrete Mixed-Monotonic Equations (RIDMME)
 //Note: config/systemFolderConfi/BiasRnd.h comment line 42 to compute Nan-inf.
+
+array SumModel(array X_inf, array X_sup){
+    int Size = X_inf.size();
+    array SumStates(2,0);
+        for(int i = 0; i < Size; i++){
+            SumStates[0] = X_inf[i] + SumStates[0];
+            SumStates[1] = X_sup[i] + SumStates[1];
+        }
+    return SumStates;
+}
 
 int main(){
     // Intervals for model states
@@ -36,12 +47,27 @@ int main(){
          
     arrayInt N = {5,5,5,5};
 
-    Simulation(ModelExample, X_inf, X_sup, P_inf, P_sup, N, t_f);    
+    //Series of simulations
 
-    SimulationMixMon(ModelExample, X_inf, X_sup, P_inf, P_sup, t_f);
+    //RIDMME simulation
+    matrix RIDMME_inf(t_f, array(X_inf.size())), RIDMME_sup(t_f, array(X_inf.size()));
+    Simulation(ModelExample, X_inf, X_sup, P_inf, P_sup, N, t_f, RIDMME_inf, RIDMME_sup);    
 
+    //Classical Mixed-monotonic simulation
+    matrix MixMon_inf(t_f, array(X_inf.size())), MixMon_sup(t_f, array(X_inf.size()));
+    SimulationMixMon(ModelExample, X_inf, X_sup, P_inf, P_sup, t_f, MixMon_inf, MixMon_sup);
+
+    //Montecarlo simulations
     int Samples = 1000;
-    MontecarloSets(ModelExample, t_f, X_inf, X_sup, P_inf, P_sup, Samples);
+    matrix Monte_inf(t_f, array(X_inf.size())), Monte_sup(t_f, array(X_inf.size()));
+    MontecarloSets(ModelExample, X_inf, X_sup, P_inf, P_sup, Samples, t_f, Monte_inf, Monte_sup);
+
+    //Estimation of error using a user-defined function
+    array Constraint = SumModel(X_inf, X_sup);
+    matrix ConstraintLimits = merge2Vectors(array(t_f, Constraint[0]), array(t_f, Constraint[1]));
+    array TMetric = TimeSeriesError(SumModel, RIDMME_inf, RIDMME_sup, ConstraintLimits, 1);
+
+    cout<<endl;
 
     return 0;
 }

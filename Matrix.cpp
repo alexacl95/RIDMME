@@ -235,3 +235,19 @@ matrix findMinMaxMatrix(const matrixList& matrices, int MinMax){
     }    
     return minmaxMatrix;
 }
+
+matrix merge2Vectors(const array& vector1, const array& vector2){
+    size_t size = vector1.size();
+    if (size != vector2.size()){
+        cout << "Error: Vectors have different sizes." << endl;
+        return matrix();
+    }
+
+    matrix result(size, array(2));
+    for (size_t i = 0; i < size; ++i) {
+        result[i][0] = vector1[i];
+        result[i][1] = vector2[i];
+    }
+
+    return result;
+}
