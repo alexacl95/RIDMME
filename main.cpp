@@ -18,7 +18,7 @@
 int main(){
     // Intervals for model states
     array X_inf{45, 5};
-    array X_sup{36, 20};
+    array X_sup{60, 20};
 
     // array P_inf{};
     // array P_sup{};
@@ -29,8 +29,8 @@ int main(){
     // array P_inf{0.1, 0.3};
     // array P_sup{0.3, 0.6}; 
 
-    array P_inf{0.5, 0.2};
-    array P_sup{0.8, 0.5};
+    array P_inf{0.2, 0.5};
+    array P_sup{0.5, 0.8};
 
     int t_f = 2;
          
