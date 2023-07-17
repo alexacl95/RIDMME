@@ -17,18 +17,15 @@ void AutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&,INTERVAL_VEC
     INTERVAL_VECTOR GrdP(n_x);
     
     if(n_p!=0){
-        // INTERVAL_VECTOR p(n_p);
-        // INTERVAL_VECTOR GrdP(n_x);
-
         GrdInfP.resize(n_x), GrdSupP.resize(n_x);
         //Save inf and sup state intervals into INTERVAL
         for (int i = 0; i < n_p; i++){
             p(i+1) = INTERVAL(P_inf[i], P_sup[i]);
         }  
-            //Calculation of inf and sup Jacobian values
+        //Calculation of inf and sup Jacobian values
         for (int i = 0; i < n_x; i++){
-            for (int j = 0; j < n_p; j++){
-                GrdP(j+1) = GradientValue(fnc(x, p, i))(n_x+j+1);
+            for (int j = 1; j <= n_p; j++){
+                GrdP(j) = GradientValue(fnc(x, p, i))(n_x+j);
             }
             GrdInfP[i].resize(n_p), GrdSupP[i].resize(n_p); 
             for(int j = 0; j < n_p; j++){
@@ -38,10 +35,10 @@ void AutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&,INTERVAL_VEC
         }        
     }else{
         INTERVAL_VECTOR p(n_x);
-        matrix zeros(n_x);
-        GrdInfP = zeros;
-        GrdSupP = zeros;
+        matrix zeros(n_x, array(1, 0));
+        GrdInfP = zeros, GrdSupP = zeros;
     }
+
     for (int i = 0; i < n_x; i++){
         for (int j = 1; j <= n_x; j++){
             Grd(j) = GradientValue(fnc(x, p, i))(j);
@@ -120,6 +117,8 @@ void MultipleAutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INT
     if (ContinueFlag==false){
         Jx_inf = matrix(n_x,array(n_x, -numeric_limits<double>::infinity()));
         Jx_sup = matrix(n_x,array(n_x, numeric_limits<double>::infinity())); 
+        Jp_inf = matrix(n_x,array(n_p, -numeric_limits<double>::infinity()));
+        Jp_sup = matrix(n_x,array(n_p, numeric_limits<double>::infinity()));
         return; 
     }    
     Jx_inf = findMinMaxMatrix(GrdInfList, 0);

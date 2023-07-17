@@ -112,7 +112,7 @@ array matrixVectorMultiply(const matrix& Matrix, const array& Array){
         cout << "Error: Matrix and vector dimensions are incompatible." << endl;
         return {};
     }
-    array result(numRows, 0.0);
+    array result(numRows, 0);
     // Perform matrix-vector multiplication
     for (int i = 0; i < numRows; i++) {
         for (int j = 0; j < numCols; j++) {

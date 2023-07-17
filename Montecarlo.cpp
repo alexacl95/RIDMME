@@ -36,6 +36,7 @@ void MontecarloSets(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_V
     array x_step(n_x,0); 
 
     for(int i = 0; i < time-1; i++){
+        // #pragma omp parallel for
         for(int j = 0;  j < sampleN; j++){
             x_step = Montecarlo_sim[j][i];
             ToDoubleEvaluationModel(fnc, i, x_step, p[j]);

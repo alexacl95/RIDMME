@@ -43,9 +43,9 @@ int main(){
     array P_inf{0.2, 0.5};
     array P_sup{0.5, 0.8};
 
-    int t_f = 5;
+    int t_f = 2;
          
-    arrayInt N = {5,5,5,5};
+    arrayInt N = {3,3,3,3};
 
     //Series of simulations
 
@@ -53,7 +53,7 @@ int main(){
     matrix RIDMME_inf(t_f, array(X_inf.size())), RIDMME_sup(t_f, array(X_inf.size()));
     Simulation(ModelExample, X_inf, X_sup, P_inf, P_sup, N, t_f, RIDMME_inf, RIDMME_sup);    
 
-    //Classical Mixed-monotonic simulation
+    //Classical Mixed-monotonic simulation 
     matrix MixMon_inf(t_f, array(X_inf.size())), MixMon_sup(t_f, array(X_inf.size()));
     SimulationMixMon(ModelExample, X_inf, X_sup, P_inf, P_sup, t_f, MixMon_inf, MixMon_sup);
 

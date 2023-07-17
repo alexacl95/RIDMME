@@ -20,6 +20,7 @@ void MixMonotonicityMethod(
     matrix xi_low(n_x, array(n_x));
     matrix xi_up(n_x, array(n_x));
     matrix comp_state(n_x, array(n_x));
+    
     matrix pi_low(n_x, array(n_p));
     matrix pi_up(n_x, array(n_p));
     matrix comp_input(n_x, array(n_p));
@@ -81,9 +82,9 @@ void MixMonotonicityMethod(
         array xi_up_succ = xi_up_temp;
 
         // Over-approximation on dimension i
-        ComplementStates = matrixVectorMultiply(comp_state,susVectors(xi_low[i],xi_up[i]));
-        ComplementInputs = matrixVectorMultiply(comp_input,susVectors(pi_low[i],pi_up[i]));
-        Complement = susVectors(ComplementStates, ComplementInputs);
+        ComplementStates = matrixVectorMultiply(comp_state, susVectors(xi_low[i], xi_up[i]));
+        ComplementInputs = matrixVectorMultiply(comp_input, susVectors(pi_low[i], pi_up[i]));
+        Complement = sumVectors(ComplementStates, ComplementInputs);
         succ_low[i] = xi_low_succ[i] - Complement[i];
         succ_up[i] = xi_up_succ[i] + Complement[i];
     }
@@ -107,9 +108,6 @@ void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTO
     arrayInt N0 = N;
     int Step = 3;
     int Step0 = Step;
-
-    // matrix Results_low(t_f,array(n_x)), Results_up(t_f,array(n_x));
-    // array P_inf(n_x), P_sup(n_x);
 
     Results_low[0] = X_inf;
     Results_up[0] = X_sup;
