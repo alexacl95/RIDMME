@@ -63,11 +63,11 @@ void RefinementIteration(arrayInt& N, int& i,
 
     for (int j = 0; j < n_x; ++j) {
         if (AnyNanElement[j]) {
-            N[j] += ceil((n_x + n_p)/Step);
+            N[j] += ceil((n_x + n_p)/(Step/2));
         }
     }
-    for (int j = n_x; j < n_x+n_p; ++j) {
-        N[j] += n_p;
+    for (int j = n_x; j < n_x + n_p; ++j) {
+        N[j] += ceil((n_x + n_p)/(Step/2));
     }
     
     if (i > Step) {

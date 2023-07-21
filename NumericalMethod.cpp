@@ -145,13 +145,11 @@ void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTO
             Results_low[i] = X_inf;
             Results_up[i] = X_sup;  
                
-            IterationRep[i] =+ 1;       
+            IterationRep[i] += 1;       
         }       
         //Finishing Refinement
     }
     cout << "Finished!" << endl;
-    //Save results in a csv file
-    saveMatricesToCSV(Results_low, Results_up, "Results.csv");
 }
 
 void SimulationMixMon(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const), array X_inf, array X_sup,
@@ -181,8 +179,6 @@ void SimulationMixMon(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL
         Results_up[i] = X_sup;
     }
     cout << "Finished!" << endl;
-    //Save results in a csv file
-    saveMatricesToCSV(Results_low, Results_up, "ResultsMixMon.csv");
 }
 
 void SingleSimulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const),

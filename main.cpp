@@ -43,7 +43,7 @@ int main(){
     array P_inf{0.2, 0.5};
     array P_sup{0.5, 0.8};
 
-    int t_f = 2;
+    int t_f = 20;
          
     arrayInt N = {3,3,3,3};
 
@@ -51,22 +51,34 @@ int main(){
 
     //RIDMME simulation
     matrix RIDMME_inf(t_f, array(X_inf.size())), RIDMME_sup(t_f, array(X_inf.size()));
-    Simulation(ModelExample, X_inf, X_sup, P_inf, P_sup, N, t_f, RIDMME_inf, RIDMME_sup);    
+    Simulation(ModelExample, X_inf, X_sup, P_inf, P_sup, N, t_f, RIDMME_inf, RIDMME_sup);
+    saveMatricesToCSV(RIDMME_inf, RIDMME_sup, "Results/ResultsRIDMME.csv");
 
     //Classical Mixed-monotonic simulation 
     matrix MixMon_inf(t_f, array(X_inf.size())), MixMon_sup(t_f, array(X_inf.size()));
     SimulationMixMon(ModelExample, X_inf, X_sup, P_inf, P_sup, t_f, MixMon_inf, MixMon_sup);
+    saveMatricesToCSV(MixMon_inf, MixMon_sup, "Results/ResultsMixMon.csv");
 
     //Montecarlo simulations
     int Samples = 1000;
     matrix Monte_inf(t_f, array(X_inf.size())), Monte_sup(t_f, array(X_inf.size()));
     MontecarloSets(ModelExample, X_inf, X_sup, P_inf, P_sup, Samples, t_f, Monte_inf, Monte_sup);
+    saveMatricesToCSV(Monte_inf, Monte_sup, "Results/ResultsMontecarlo.csv");
 
     //Estimation of error using a user-defined function
     array Constraint = SumModel(X_inf, X_sup);
     matrix ConstraintLimits = merge2Vectors(array(t_f, Constraint[0]), array(t_f, Constraint[1]));
-    array TMetric = TimeSeriesError(SumModel, RIDMME_inf, RIDMME_sup, ConstraintLimits, 1);
+    
+    matrixList Low(3), Up(3);
+    Low[0] = RIDMME_inf;
+    Low[1] = MixMon_inf;
+    Low[2] = Monte_inf;
 
+    Up[0] = RIDMME_sup;
+    Up[1] = MixMon_sup;
+    Up[2] = Monte_sup;
+
+    MultipleError(SumModel, Low, Up, ConstraintLimits, 1);
     cout<<endl;
 
     return 0;

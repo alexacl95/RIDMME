@@ -34,3 +34,13 @@ array TimeSeriesError(array (*fnc)(array X_inf, array X_sup), matrix X_inf, matr
     }
     return Error;
 }
+
+void MultipleError(array (*fnc)(array X_inf, array X_sup), matrixList X_inf, matrixList X_sup, matrix Constraint, int ErrorMetric){
+    int n_l = X_inf.size();
+    array Error;
+
+    for(int i = 0; i < n_l; i++){
+        Error = TimeSeriesError(fnc, X_inf[i], X_sup[i], Constraint, ErrorMetric);
+        saveArrayToCSV(Error, array(), "Error/Error" + to_string(i) + ".csv");
+    }
+}

@@ -47,7 +47,5 @@ void MontecarloSets(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_V
     Result_inf = findMinMaxMatrix(Montecarlo_sim, 0);
     Result_sup = findMinMaxMatrix(Montecarlo_sim, 1);
 
-    saveMatricesToCSV(Result_inf, Result_sup, "ResultsMontecarlo.csv");
-
     cout << "Finished!" << endl;
 }
