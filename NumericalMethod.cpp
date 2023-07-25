@@ -109,6 +109,10 @@ void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTO
     int Step = 3;
     int Step0 = Step;
 
+    array X_inf_flag;
+    array X_sup_flag;
+    int Iteration_flag = 0;
+
     Results_low[0] = X_inf;
     Results_up[0] = X_sup;
 
@@ -125,13 +129,12 @@ void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTO
 
         //Adapatative Refinement
         int Counter = 0;
-        ReduceN(N, N0, 3, 0.8);
+        //ReduceN(N, N0, 3, 0.8);
 
         while(any_of(AnyNanElement.begin(), AnyNanElement.end(), [](bool value) { return value; }) && Counter < 2){
-
             cout << "Starting refinement process" << endl;
-
             Counter += 1;
+
             RefinementIteration(N, i,
                         IterationRep, Step, 
                         Step0, AnyNanElement, n_x, n_p);
@@ -143,11 +146,11 @@ void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTO
             SingleSimulation(fnc, X_inf, X_sup, P_inf, P_sup, N, t_f, i, AnyNanElement);  
 
             Results_low[i] = X_inf;
-            Results_up[i] = X_sup;  
-               
-            IterationRep[i] += 1;       
+            Results_up[i] = X_sup;   
+            
+            IterationRep[i] += 1;                   
         }       
-        //Finishing Refinement
+
     }
     cout << "Finished!" << endl;
 }
@@ -161,8 +164,6 @@ void SimulationMixMon(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL
 
     //Check that user 
     CheckSimSettings(fnc, X_inf, X_sup, P_inf, P_sup, N); 
-
-    // matrix Results_low(t_f,array(n_x)), Results_up(t_f,array(n_x));
 
     Results_low[0] = X_inf;
     Results_up[0] = X_sup;

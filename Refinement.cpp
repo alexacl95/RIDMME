@@ -6,7 +6,6 @@ matrix NonUniformSubdivision(array Factor_inf, array Factor_sup, arrayInt& N){
     matrix X;
     MergeTwoArray(Factor_inf, Factor_sup, X);
     int n_x = X.size();
-
     for (int i = 0; i < n_x; i++) {
         vector<double> Xi = X[i];
         double w_sub = (Xi[1] - Xi[0]) / N[i];
@@ -55,29 +54,44 @@ void RefinementIteration(arrayInt& N, int& i,
                          arrayInt IterationRep, int& Step, 
                          int Step0, arrayBool AnyNanElement, int n_x, int n_p ){
 
-    if(IterationRep[i] >= 2){
-        Step = Step+2;
-    }else{
-        Step = Step0;
-    }
 
-    for (int j = 0; j < n_x; ++j) {
-        if (AnyNanElement[j]) {
-            N[j] += ceil((n_x + n_p)/(Step/2));
+
+    if( i != 1 & IterationRep[1] == 0){
+    //Go back to first iteration and increase de N size
+        i = 1;
+        if(N[0] < 2*(n_x+n_p)){
+            N = arrayInt(n_x+n_p, 3*N[0]);
+        }else{
+            N = arrayInt(n_x+n_p, 2*(n_x+n_p));
         }
-    }
-    for (int j = n_x; j < n_x + n_p; ++j) {
-        N[j] += ceil((n_x + n_p)/(Step/2));
-    }
-    
-    if (i > Step) {
-        i -= Step;
         cout << "~~~~~~~~~~~~~Back to Iteration: " << i << "~~~~~~~~~~~~~" << endl;
+    } else if (i > Step) {
+        i -= Step;
+
+        if(IterationRep[i] > 2){
+            Step = Step+2;
+            i -= Step;
+            if(i<1){
+                i = 1;
+            }
+        }else{
+            Step = Step0;
+        }        
+
+        cout << "~~~~~~~~~~~~~Back to Iteration: " << i << "~~~~~~~~~~~~~" << endl;
+        for (int j = 0; j < n_x; ++j) {
+            if (AnyNanElement[j]) {
+                N[j] += ceil((n_x + n_p)/(Step/2));
+            }
+        }
+        for (int j = n_x; j < n_x + n_p; ++j) {
+            N[j] += ceil((n_x + n_p)/(Step/2));
+        }        
     }
 
     cout << "  ***N = [";
         for (int val : N) {
             cout << val << " ";
         }
-    cout << "]***" << endl;
+    cout << "]***" << endl;    
 }

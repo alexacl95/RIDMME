@@ -43,9 +43,9 @@ int main(){
     array P_inf{0.2, 0.5};
     array P_sup{0.5, 0.8};
 
-    int t_f = 20;
+    int t_f = 25;
          
-    arrayInt N = {3,3,3,3};
+    arrayInt N = {5,5,5,5};
 
     //Series of simulations
 
@@ -65,7 +65,7 @@ int main(){
     MontecarloSets(ModelExample, X_inf, X_sup, P_inf, P_sup, Samples, t_f, Monte_inf, Monte_sup);
     saveMatricesToCSV(Monte_inf, Monte_sup, "Results/ResultsMontecarlo.csv");
 
-    //Estimation of error using a user-defined function
+    // //Estimation of error using a user-defined function
     array Constraint = SumModel(X_inf, X_sup);
     matrix ConstraintLimits = merge2Vectors(array(t_f, Constraint[0]), array(t_f, Constraint[1]));
     
