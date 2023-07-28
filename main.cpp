@@ -27,6 +27,12 @@ array SumModel(array X_inf, array X_sup){
 }
 
 int main(){
+
+    //Model to use
+    RIDMME_INTERVAL_AUTODIFF (*ModelName)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const) = ModelExample;
+    //file names
+    string FileName = "ModelExample";
+
     // Intervals for model states
     array X_inf{45, 5};
     array X_sup{60, 20};
@@ -34,36 +40,30 @@ int main(){
     // array P_inf{};
     // array P_sup{};
     
-    // array P_inf{0.1};
-    // array P_sup{0.3}; 
-
-    // array P_inf{0.1, 0.3};
-    // array P_sup{0.3, 0.6}; 
-
     array P_inf{0.2, 0.5};
-    array P_sup{0.5, 0.8};
+    array P_sup{0.22, 0.55};
 
-    int t_f = 25;
+    int t_f = 15;
          
-    arrayInt N = {5,5,5,5};
+    arrayInt N = {15,15,15,15};
 
     //Series of simulations
 
     //RIDMME simulation
     matrix RIDMME_inf(t_f, array(X_inf.size())), RIDMME_sup(t_f, array(X_inf.size()));
-    Simulation(ModelExample, X_inf, X_sup, P_inf, P_sup, N, t_f, RIDMME_inf, RIDMME_sup);
-    saveMatricesToCSV(RIDMME_inf, RIDMME_sup, "Results/ResultsRIDMME.csv");
+    Simulation(ModelName, X_inf, X_sup, P_inf, P_sup, N, t_f, RIDMME_inf, RIDMME_sup);
+    saveMatricesToCSV(RIDMME_inf, RIDMME_sup, "Results/" + FileName + "_RIDMME.csv");
 
     //Classical Mixed-monotonic simulation 
     matrix MixMon_inf(t_f, array(X_inf.size())), MixMon_sup(t_f, array(X_inf.size()));
-    SimulationMixMon(ModelExample, X_inf, X_sup, P_inf, P_sup, t_f, MixMon_inf, MixMon_sup);
-    saveMatricesToCSV(MixMon_inf, MixMon_sup, "Results/ResultsMixMon.csv");
+    SimulationMixMon(ModelName, X_inf, X_sup, P_inf, P_sup, t_f, MixMon_inf, MixMon_sup);
+    saveMatricesToCSV(MixMon_inf, MixMon_sup, "Results/" + FileName + "_MixMon.csv");
 
     //Montecarlo simulations
     int Samples = 1000;
     matrix Monte_inf(t_f, array(X_inf.size())), Monte_sup(t_f, array(X_inf.size()));
-    MontecarloSets(ModelExample, X_inf, X_sup, P_inf, P_sup, Samples, t_f, Monte_inf, Monte_sup);
-    saveMatricesToCSV(Monte_inf, Monte_sup, "Results/ResultsMontecarlo.csv");
+    MontecarloSets(ModelName, X_inf, X_sup, P_inf, P_sup, Samples, t_f, Monte_inf, Monte_sup);
+    saveMatricesToCSV(Monte_inf, Monte_sup, "Results/" + FileName + "_Montecarlo.csv");
 
     // //Estimation of error using a user-defined function
     array Constraint = SumModel(X_inf, X_sup);
@@ -78,7 +78,7 @@ int main(){
     Up[1] = MixMon_sup;
     Up[2] = Monte_sup;
 
-    MultipleError(SumModel, Low, Up, ConstraintLimits, 1);
+    MultipleError(SumModel, Low, Up, ConstraintLimits, 1, FileName);
     cout<<endl;
 
     return 0;
