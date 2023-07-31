@@ -26,26 +26,36 @@ array SumModel(array X_inf, array X_sup){
     return SumStates;
 }
 
+array SumModelDengue(array X_inf, array X_sup){
+    int Size = 3;
+    array SumStates(2,0);
+        for(int i = 0; i < Size; i++){
+            SumStates[0] = X_inf[i] + SumStates[0];
+            SumStates[1] = X_sup[i] + SumStates[1];
+        }
+    return SumStates;
+}
+
 int main(){
 
     //Model to use
-    RIDMME_INTERVAL_AUTODIFF (*ModelName)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const) = ModelExample;
+    RIDMME_INTERVAL_AUTODIFF (*ModelName)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const) = ModelCOVID;
     //file names
-    string FileName = "ModelExample";
+    string FileName = "ModelCOVID";
 
     // Intervals for model states
-    array X_inf{45, 5};
-    array X_sup{60, 20};
+    array X_inf{83000000, 0, 10, 100, 30, 0};
+    array X_sup{84000000, 600, 100, 200, 60, 10};
 
-    // array P_inf{};
-    // array P_sup{};
+    array P_inf{};
+    array P_sup{};
     
-    array P_inf{0.2, 0.5};
-    array P_sup{0.22, 0.55};
+    // array P_inf{0.2, 0.5};
+    // array P_sup{0.22, 0.55};
 
-    int t_f = 15;
+    int t_f = 10;
          
-    arrayInt N = {15,15,15,15};
+    arrayInt N = {5,5,5,5,5,5};
 
     //Series of simulations
 
@@ -78,7 +88,7 @@ int main(){
     Up[1] = MixMon_sup;
     Up[2] = Monte_sup;
 
-    MultipleError(SumModel, Low, Up, ConstraintLimits, 1, FileName);
+    MultipleError(SumModelDengue, Low, Up, ConstraintLimits, 1, FileName);
     cout<<endl;
 
     return 0;
