@@ -107,7 +107,7 @@ RIDMME_INTERVAL_AUTODIFF ModelDengue(INTERVAL_VECTOR & v, INTERVAL_VECTOR& P, in
     RIDMME_INTERVAL_AUTODIFF aleph_H = 1 + nu_h*x(2)/(x(1)+x(2));
     RIDMME_INTERVAL_AUTODIFF aleph_M = 1 + nu_m*x(5)/(x(4)+x(5));
     RIDMME_INTERVAL_AUTODIFF red_m = z*x(5)*Power((x(1)/(x(1)+x(2)+x(3))), aleph_H);
-    RIDMME_INTERVAL_AUTODIFF phi = beta_mh*(1-Power((1-1/x(1)), red_m));
+    RIDMME_INTERVAL_AUTODIFF phi = beta_mh*(1-Power(1-1/x(1), red_m));
     RIDMME_INTERVAL_AUTODIFF psi = beta_hm*(1-Power(1-Power(x(2)/(x(1)+x(2)+x(3)), aleph_M), z));
     RIDMME_INTERVAL_AUTODIFF A = r *(x(4)+x(5))*Exp(1-(x(4)+x(5))/C);
     //Human population
@@ -132,24 +132,24 @@ RIDMME_INTERVAL_AUTODIFF ModelDengue(INTERVAL_VECTOR & v, INTERVAL_VECTOR& P, in
 RIDMME_INTERVAL_AUTODIFF ModelCOVID(INTERVAL_VECTOR & v, INTERVAL_VECTOR& P, int const i){
     RIDMME_INTERVAL_AUTODIFF x = MergeTwoIntervalArr(v, P);
     //Parameter definition
-    double lambda = 0.022;
+    double lambda = 0.22;
     double alpha = 0.047;
-    double mu = 0.0;
-    double theta = 1;
+    double mu = 0;
+    double theta = 0.8;
     double gamma = 0.04;
     double nu = 19;
     double beta = 0.99;
-    double z = 2;
+    double z = 20;
     //Model functions
     RIDMME_INTERVAL_AUTODIFF aleph = 1 + nu*(x(3)+x(4)+x(5))/(x(1) + x(3)+x(4)+x(5));
-    RIDMME_INTERVAL_AUTODIFF G1 = beta*(1-Power(1-Power(x(3)/(x(1)+x(2)+x(3)+x(4)+x(5)),aleph),z));
+    RIDMME_INTERVAL_AUTODIFF G1 = beta*(1-Power(1-Power(x(3)/(x(1)+x(2)+x(3)+x(4)+x(5)+x(6)), aleph), z));
     //Model functions
     RIDMME_INTERVAL_AUTODIFF v1 = (1-lambda)*(1-G1)*x(1) + alpha*x(2) + mu*x(6);
     RIDMME_INTERVAL_AUTODIFF v2 = lambda*(1-G1)*x(1) + (1-alpha)*x(2);
-    RIDMME_INTERVAL_AUTODIFF v3 = G1*x(1) + (1-lambda)*(1-theta)*(1-gamma)*x(3) + alpha*(1 - theta)*(1-gamma)*x(4);
-    RIDMME_INTERVAL_AUTODIFF v4 = lambda*(1-gamma)*(1 - theta)*x(3) + (1 - gamma)*(1-theta)*(1-alpha)*x(4);
-    RIDMME_INTERVAL_AUTODIFF v5 = theta*(1-gamma)*x(3) + theta*(1 - gamma)*x(4) + x(5)*(1-gamma);
-    RIDMME_INTERVAL_AUTODIFF v6 = x(6)*(1-mu) + gamma*(x(3) + x(4) + x(5));
+    RIDMME_INTERVAL_AUTODIFF v3 = G1*x(1) + (1-lambda)*(1-theta)*(1-gamma)*x(3) + alpha*(1-theta)*(1-gamma)*x(4);
+    RIDMME_INTERVAL_AUTODIFF v4 = lambda*(1-gamma)*(1-theta)*x(3) + (1-gamma)*(1-theta)*(1-alpha)*x(4);
+    RIDMME_INTERVAL_AUTODIFF v5 = theta*(1-gamma)*x(3) + theta*(1-gamma)*x(4) + x(5)*(1-gamma);
+    RIDMME_INTERVAL_AUTODIFF v6 = x(6)*(1-mu) + gamma*(x(3)+x(4)+x(5));
     //Save results
     vector<RIDMME_INTERVAL_AUTODIFF> w(6);
     w[0] = v1;

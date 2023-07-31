@@ -59,10 +59,12 @@ void RefinementIteration(arrayInt& N, int& i,
     if( i != 1 & IterationRep[1] == 0){
     //Go back to first iteration and increase de N size
         i = 1;
-        if(N[0] < 2*(n_x+n_p)){
-            N = arrayInt(n_x+n_p, 3*N[0]);
-        }else{
-            N = arrayInt(n_x+n_p, 2*(n_x+n_p));
+        for (int l = 0; l <= n_x+n_p; l++){
+            if(N[l] > 2*(n_x+n_p)){
+                N[l] = 3*N[l];
+            }else{
+                N[l] = 2*(n_x+n_p);
+            }
         }
         cout << "~~~~~~~~~~~~~Back to Iteration: " << i << "~~~~~~~~~~~~~" << endl;
     } else if (i > Step) {
@@ -71,7 +73,7 @@ void RefinementIteration(arrayInt& N, int& i,
         if(IterationRep[i] > 2){
             Step = Step+2;
             i -= Step;
-            if(i<1){
+            if( i < 1){
                 i = 1;
             }
         }else{

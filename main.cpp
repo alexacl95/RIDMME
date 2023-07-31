@@ -30,8 +30,8 @@ array SumModelDengue(array X_inf, array X_sup){
     int Size = 3;
     array SumStates(2,0);
         for(int i = 0; i < Size; i++){
-            SumStates[0] = X_inf[i] + SumStates[0];
-            SumStates[1] = X_sup[i] + SumStates[1];
+            SumStates[0] =+ X_inf[i];
+            SumStates[1] =+ X_sup[i];
         }
     return SumStates;
 }
@@ -44,8 +44,8 @@ int main(){
     string FileName = "ModelCOVID";
 
     // Intervals for model states
-    array X_inf{83000000, 0, 10, 100, 30, 0};
-    array X_sup{84000000, 600, 100, 200, 60, 10};
+    array X_inf{83000, 0, 10, 100, 0, 0};
+    array X_sup{84000, 0, 20, 110, 0, 20};
 
     array P_inf{};
     array P_sup{};
@@ -53,7 +53,7 @@ int main(){
     // array P_inf{0.2, 0.5};
     // array P_sup{0.22, 0.55};
 
-    int t_f = 10;
+    int t_f = 15;
          
     arrayInt N = {5,5,5,5,5,5};
 
@@ -88,8 +88,8 @@ int main(){
     Up[1] = MixMon_sup;
     Up[2] = Monte_sup;
 
-    MultipleError(SumModelDengue, Low, Up, ConstraintLimits, 1, FileName);
-    cout<<endl;
+    MultipleError(SumModel, Low, Up, ConstraintLimits, 1, FileName);
+    cout << endl;
 
     return 0;
 }
