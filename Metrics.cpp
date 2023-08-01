@@ -41,6 +41,6 @@ void MultipleError(array (*fnc)(array X_inf, array X_sup), matrixList X_inf, mat
 
     for(int i = 0; i < n_l; i++){
         Error = TimeSeriesError(fnc, X_inf[i], X_sup[i], Constraint, ErrorMetric);
-        saveArrayToCSV(Error, array(), "Error/Error" + Name + to_string(i) + ".csv");
+        saveArrayToCSV(Error, array(), "Error/Error" + Name + "_" +to_string(i) + ".csv");
     }
 }

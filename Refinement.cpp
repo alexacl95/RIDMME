@@ -61,7 +61,7 @@ void RefinementIteration(arrayInt& N, int& i,
         i = 1;
         for (int l = 0; l <= n_x+n_p; l++){
             if(N[l] > 2*(n_x+n_p)){
-                N[l] = 3*N[l];
+                N[l] = 3*(n_x+n_p);
             }else{
                 N[l] = 2*(n_x+n_p);
             }

@@ -37,15 +37,15 @@ array SumModelDengue(array X_inf, array X_sup){
 }
 
 int main(){
-
     //Model to use
-    RIDMME_INTERVAL_AUTODIFF (*ModelName)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const) = ModelCOVID;
+    RIDMME_INTERVAL_AUTODIFF (*ModelName)(
+        INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const) = ModelDengue;
     //file names
-    string FileName = "ModelCOVID";
+    string FileName = "ModelDengue_exp_4";
 
     // Intervals for model states
-    array X_inf{83000, 0, 10, 100, 0, 0};
-    array X_sup{84000, 0, 20, 110, 0, 20};
+    array X_inf{405000, 7.2, 4.5, 26628, 3.8};
+    array X_sup{495000, 8.8, 5.5, 29431, 4.2};
 
     array P_inf{};
     array P_sup{};
@@ -53,9 +53,9 @@ int main(){
     // array P_inf{0.2, 0.5};
     // array P_sup{0.22, 0.55};
 
-    int t_f = 15;
+    int t_f = 24;
          
-    arrayInt N = {5,5,5,5,5,5};
+    arrayInt N = {5,5,5,5,5};
 
     //Series of simulations
 
@@ -76,7 +76,7 @@ int main(){
     saveMatricesToCSV(Monte_inf, Monte_sup, "Results/" + FileName + "_Montecarlo.csv");
 
     // //Estimation of error using a user-defined function
-    array Constraint = SumModel(X_inf, X_sup);
+    array Constraint = SumModelDengue(X_inf, X_sup);
     matrix ConstraintLimits = merge2Vectors(array(t_f, Constraint[0]), array(t_f, Constraint[1]));
     
     matrixList Low(3), Up(3);
@@ -88,7 +88,7 @@ int main(){
     Up[1] = MixMon_sup;
     Up[2] = Monte_sup;
 
-    MultipleError(SumModel, Low, Up, ConstraintLimits, 1, FileName);
+    MultipleError(SumModelDengue, Low, Up, ConstraintLimits, 1, FileName);
     cout << endl;
 
     return 0;
