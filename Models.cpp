@@ -132,14 +132,14 @@ RIDMME_INTERVAL_AUTODIFF ModelDengue(INTERVAL_VECTOR & v, INTERVAL_VECTOR& P, in
 RIDMME_INTERVAL_AUTODIFF ModelCOVID(INTERVAL_VECTOR & v, INTERVAL_VECTOR& P, int const i){
     RIDMME_INTERVAL_AUTODIFF x = MergeTwoIntervalArr(v, P);
     //Parameter definition
-    double lambda = 0.22;
+    double lambda = 0.022;
     double alpha = 0.047;
     double mu = 0;
-    double theta = 0.8;
+    double theta = 1;
     double gamma = 0.04;
     double nu = 19;
     double beta = 0.99;
-    double z = 20;
+    double z = 2;
     //Model functions
     RIDMME_INTERVAL_AUTODIFF aleph = 1 + nu*(x(3)+x(4)+x(5))/(x(1) + x(3)+x(4)+x(5));
     RIDMME_INTERVAL_AUTODIFF G1 = beta*(1-Power(1-Power(x(3)/(x(1)+x(2)+x(3)+x(4)+x(5)+x(6)), aleph), z));

@@ -196,17 +196,24 @@ double* vectorToPrimVector(const array& vec) {
     return arr;
 }
 
-arrayBool checkColumnsForNaN(const matrix& Matrix, const matrix& Matrix2){
+arrayBool checkForNaN(const matrix& Matrix, const matrix& Matrix2, int RoworCol){
     arrayBool result(Matrix[0].size(), false);
-    for (size_t col = 0; col < Matrix[0].size(); ++col) {
-        for (size_t row = 0; row < Matrix.size(); ++row) {
-            if (isnan(Matrix[row][col])||isnan(Matrix2[row][col])) {
-                result[col] = true;
+    for (size_t col = 0; col < Matrix[0].size(); ++col){
+        for (size_t row = 0; row < Matrix.size(); ++row){
+            if (isnan(Matrix[row][col])||isnan(Matrix2[row][col])){
+                if(RoworCol == 1){
+                    result[row] = true;
+                }else if(RoworCol == 2){
+                    result[col] = true;
+                }
+                
             }
         }
     }
     return result;
 }
+
+
 
 matrix findMinMaxMatrix(const matrixList& matrices, int MinMax){
     if (matrices.empty()) {

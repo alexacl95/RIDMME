@@ -33,7 +33,7 @@ void saveMatricesToCSV(const matrix& matrix1, const matrix& matrix2, const strin
 void saveArrayToCSV(const array& array1, const array& array2, const string& filename);
 bool hasNaN(const matrix& Matrix);
 double* vectorToPrimVector(const array& vec);
-arrayBool checkColumnsForNaN(const matrix& Matrix, const matrix& Matrix2);
+arrayBool checkForNaN(const matrix& Matrix, const matrix& Matrix2, int RoworCol);
 matrix findMinMaxMatrix(const matrixList& matrices, int MinMax);
 matrix merge2Vectors(const array& vector1, const array& vector2);
 #endif

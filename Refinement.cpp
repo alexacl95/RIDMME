@@ -60,10 +60,10 @@ void RefinementIteration(arrayInt& N, int& i,
     //Go back to first iteration and increase de N size
         i = 1;
         for (int l = 0; l <= n_x+n_p; l++){
-            if(N[l] > 2*(n_x+n_p)){
-                N[l] = 3*(n_x+n_p);
+            if(N[l] < 2*ceil(n_x+n_p)){
+                N[l] = 2*ceil(n_x+n_p);
             }else{
-                N[l] = 2*(n_x+n_p);
+                N[l] = ceil(2.5*(n_x+n_p));
             }
         }
         cout << "~~~~~~~~~~~~~Back to Iteration: " << i << "~~~~~~~~~~~~~" << endl;
@@ -84,6 +84,8 @@ void RefinementIteration(arrayInt& N, int& i,
         for (int j = 0; j < n_x; ++j) {
             if (AnyNanElement[j]) {
                 N[j] += ceil((n_x + n_p)/(Step/2));
+            }else{
+                N[j] += floor((n_x + n_p)/(Step));
             }
         }
         for (int j = n_x; j < n_x + n_p; ++j) {

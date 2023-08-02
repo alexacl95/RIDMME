@@ -41,11 +41,11 @@ int main(){
     RIDMME_INTERVAL_AUTODIFF (*ModelName)(
         INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const) = ModelDengue;
     //file names
-    string FileName = "ModelDengue_exp_4";
+    string FileName = "ModelDengue_exp_2_2";
 
     // Intervals for model states
-    array X_inf{405000, 7.2, 4.5, 26628, 3.8};
-    array X_sup{495000, 8.8, 5.5, 29431, 4.2};
+    array X_inf{405000, 7.2, 4.5, 25227,3.6};
+    array X_sup{495000, 8.8, 5.5, 30833,4.4};
 
     array P_inf{};
     array P_sup{};
@@ -53,7 +53,7 @@ int main(){
     // array P_inf{0.2, 0.5};
     // array P_sup{0.22, 0.55};
 
-    int t_f = 24;
+    int t_f = 15;
          
     arrayInt N = {5,5,5,5,5};
 
