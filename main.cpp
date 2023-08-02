@@ -44,8 +44,8 @@ int main(){
     string FileName = "ModelDengue_exp_2_2";
 
     // Intervals for model states
-    array X_inf{405000, 7.2, 4.5, 25227,3.6};
-    array X_sup{495000, 8.8, 5.5, 30833,4.4};
+    array X_inf{405000, 7.2, 4.5, 25227, 3.6};
+    array X_sup{495000, 8.8, 5.5, 30833, 4.4};
 
     array P_inf{};
     array P_sup{};

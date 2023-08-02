@@ -2,16 +2,19 @@
 #include "RIDMME_Interval_Autodiff.h"
 
 RIDMME_INTERVAL_AUTODIFF ModelFunction1(INTERVAL_VECTOR & v, INTERVAL_VECTOR& P, int const i){
+    //Martcheva-based model for a SIR with mortality model
     RIDMME_INTERVAL_AUTODIFF x = MergeTwoIntervalArr(v, P);
     //Parameter definition
     double beta, gamma, mu;
     beta = 0.1;
     gamma = 0.3;
     mu = 0.01;
+    //Prob
+    RIDMME_INTERVAL_AUTODIFF G = beta*x(4)*(x(2)/(x(1)+x(2)+x(3)));
     //Model functions
-    RIDMME_INTERVAL_AUTODIFF v1 = (1-x(5))*x(1)*(1-x(4)*(x(2)/(x(1)+x(2)+x(3)))) + x(5)*(x(1)+x(2)+x(3));                
-    RIDMME_INTERVAL_AUTODIFF v2 = (1-x(5))*(x(4)*x(1)*(x(2)/(x(1)+x(2)+x(3)))+x(2)*(1-gamma));
-    RIDMME_INTERVAL_AUTODIFF v3 = (1-x(5))*(x(3) + x(2)*gamma);
+    RIDMME_INTERVAL_AUTODIFF v1 = (1-x(5))*x(1)*(1-G) + x(5)*(x(1)+x(2)+x(3));                
+    RIDMME_INTERVAL_AUTODIFF v2 = (1-x(5))*x(1)*G + (1-x(5))*x(2)*(1-gamma);
+    RIDMME_INTERVAL_AUTODIFF v3 = (1-x(5))*x(3) + (1-x(5))*(x(2)*gamma);
     //Save results
     vector<RIDMME_INTERVAL_AUTODIFF> w(3);
     w[0] = v1;
@@ -23,58 +26,96 @@ RIDMME_INTERVAL_AUTODIFF ModelFunction1(INTERVAL_VECTOR & v, INTERVAL_VECTOR& P,
 } 
 
 RIDMME_INTERVAL_AUTODIFF ModelFunction2(INTERVAL_VECTOR & v, INTERVAL_VECTOR& P, int const i){
+    //Martcheva-based model for a SEIR model
     RIDMME_INTERVAL_AUTODIFF x = MergeTwoIntervalArr(v, P);
     //Parameter definition
-    double beta = 0.1, gamma = 0.3, mu = 0.01, z = 1;
-    //Model functions
-    RIDMME_INTERVAL_AUTODIFF G1 =  1-Power(1-Power((x(2)/(x(1)+x(2)+x(3))),(x(2)/(x(1)+x(2)))),z);
-    RIDMME_INTERVAL_AUTODIFF v1 = (1-mu)*x(1)*(1-beta*G1) + mu*(x(1)+x(2)+x(3));                
-    RIDMME_INTERVAL_AUTODIFF v2 = (1-mu)*(x(1)*beta*G1+x(2)*(1-gamma));
-    RIDMME_INTERVAL_AUTODIFF v3 = (1-mu)*(x(3) + x(2)*gamma);
-    //Save results
-    vector<RIDMME_INTERVAL_AUTODIFF> w(3);
-    w[0] = v1;
-    w[1] = v2;
-    w[2] = v3;
-    //Result of the ith state
-    RIDMME_INTERVAL_AUTODIFF result = w[i];
-    return result;
-}
-
-RIDMME_INTERVAL_AUTODIFF ModelFunction5(INTERVAL_VECTOR & v, INTERVAL_VECTOR& P, int const i){
-    RIDMME_INTERVAL_AUTODIFF x = MergeTwoIntervalArr(v, P);
-    //Parameter definition
-    double beta, gamma, mu;
+    double beta, gamma, mu, theta;
     beta = 0.1;
     gamma = 0.3;
     mu = 0.01;
+    theta = 0.3;
+    //Probability
+    RIDMME_INTERVAL_AUTODIFF G = beta*(x(2)/(x(1)+x(2)+x(3)+x(4)));
     //Model functions
-    RIDMME_INTERVAL_AUTODIFF G = 1-1/(x(2)/(x(1)+x(2)+x(3))+1);
-    RIDMME_INTERVAL_AUTODIFF v1 = (1-mu)*x(1)*(1-beta*G) + mu*(x(1)+x(2)+x(3));                
-    RIDMME_INTERVAL_AUTODIFF v2 = (1-mu)*(x(1)*beta*G+x(2)*(1-gamma));
-    RIDMME_INTERVAL_AUTODIFF v3 = (1-mu)*(x(3) + x(2)*gamma);
+    RIDMME_INTERVAL_AUTODIFF v1 = (1-G)*x(1);                
+    RIDMME_INTERVAL_AUTODIFF v2 = G*x(1)+(1-theta) + (1-theta)*x(2);
+    RIDMME_INTERVAL_AUTODIFF v3 = theta*x(2) + (1-gamma)*x(3);
+    RIDMME_INTERVAL_AUTODIFF v4 = x(4) + gamma*x(3);
     //Save results
-    vector<RIDMME_INTERVAL_AUTODIFF> w(3);
+    vector<RIDMME_INTERVAL_AUTODIFF> w(4);
     w[0] = v1;
     w[1] = v2;
     w[2] = v3;
+    w[3] = v4;
     //Result of the ith state
     RIDMME_INTERVAL_AUTODIFF result = w[i];
     return result;
-}
+} 
 
-RIDMME_INTERVAL_AUTODIFF LogisticFunction(INTERVAL_VECTOR & v, INTERVAL_VECTOR& P, int const i){
+RIDMME_INTERVAL_AUTODIFF ModelFunction3(INTERVAL_VECTOR & v, INTERVAL_VECTOR& P, int const i){
+    //Martcheva-based model for a SARS model
     RIDMME_INTERVAL_AUTODIFF x = MergeTwoIntervalArr(v, P);
-
-    double r = 0.35, k = 30;
-
-    RIDMME_INTERVAL_AUTODIFF v1 =   x(1)+r*x(1)*(1-x(1)/k);
-    vector<RIDMME_INTERVAL_AUTODIFF> w(1);
+    //Parameter definition
+    double beta, gamma, mu, theta, alpha;
+    beta = 0.1;
+    gamma = 0.3;
+    mu = 0.01;
+    theta = 0.3;
+    alpha = 0.1;
+    //Probability
+    RIDMME_INTERVAL_AUTODIFF G = beta*(x(2)/(x(1)+x(2)+x(3)+x(4)));
+    //Model functions
+    RIDMME_INTERVAL_AUTODIFF v1 = x(1)*(1-G);                
+    RIDMME_INTERVAL_AUTODIFF v2 = x(1)*G + (1-theta)*(1-alpha)*x(2);
+    RIDMME_INTERVAL_AUTODIFF v3 = theta*x(2) + (1-gamma)*(1-alpha)*x(3);
+    RIDMME_INTERVAL_AUTODIFF v4 = (1-theta)*alpha*x(2) + (1-theta)*x(4);
+    RIDMME_INTERVAL_AUTODIFF v5 = theta*x(5) + (1-gamma)*alpha*x(3) + (1-gamma)*x(5);
+    RIDMME_INTERVAL_AUTODIFF v6 = x(6) + gamma*(x(5)+x(3));
+    //Save results
+    vector<RIDMME_INTERVAL_AUTODIFF> w(6);
     w[0] = v1;
+    w[1] = v2;
+    w[2] = v3;
+    w[3] = v4;
+    w[4] = v5;
+    w[5] = v6;
+    //Result of the ith state
     RIDMME_INTERVAL_AUTODIFF result = w[i];
-
     return result;
-}
+} 
+
+RIDMME_INTERVAL_AUTODIFF ModelFunction4(INTERVAL_VECTOR & v, INTERVAL_VECTOR& P, int const i){
+    //Martcheva-based model for a SEIR model
+    RIDMME_INTERVAL_AUTODIFF x = MergeTwoIntervalArr(v, P);
+    //Parameter definition
+    double beta_hm, beta_mh, gamma_h, gamma_m, mu_h, mu_m, theta, A_m, A_h;
+    beta_hm = 0.1;
+    beta_mh = 0.1;
+    gamma_h = 0.3;
+    gamma_m = 0.01;
+    mu_h = 0.01;
+    mu_m = 0.02;
+    theta = 0.3;
+    A_m = 100;
+    A_h = 0;
+    //Probability
+    RIDMME_INTERVAL_AUTODIFF G_mh = beta_mh*(x(4)/(x(3)+x(4)));
+    RIDMME_INTERVAL_AUTODIFF G_hm = beta_hm*(x(2)/(x(1)+x(2)));
+    //Model functions
+    RIDMME_INTERVAL_AUTODIFF v1 = A_h + (1-mu_h)*(1-G_mh)*x(1) + gamma_h*(1-mu_h)*x(2);                
+    RIDMME_INTERVAL_AUTODIFF v2 = (1-mu_h)*G_mh*x(1) + (1-mu_h)*(1-gamma_h)*x(2);
+    RIDMME_INTERVAL_AUTODIFF v3 = A_m + (1-mu_m)*(1-G_hm)*x(3) + (1-mu_m)*gamma_m*x(3);
+    RIDMME_INTERVAL_AUTODIFF v4 = (1-mu_m)*G_hm*x(3) + (1-mu_m)*(1-gamma_h)*x(4);
+    //Save results
+    vector<RIDMME_INTERVAL_AUTODIFF> w(4);
+    w[0] = v1;
+    w[1] = v2;
+    w[2] = v3;
+    w[3] = v4;
+    //Result of the ith state
+    RIDMME_INTERVAL_AUTODIFF result = w[i];
+    return result;
+} 
 
 RIDMME_INTERVAL_AUTODIFF ModelExample(INTERVAL_VECTOR & v, INTERVAL_VECTOR& P, int const i){
     RIDMME_INTERVAL_AUTODIFF x = MergeTwoIntervalArr(v, P);
