@@ -1,17 +1,19 @@
 #ifndef MonCar_H
 #define MonCar_H
 
-#include <iostream>
-#include <vector>
-#include <cmath>
-#include <random>
-#include "Matrix.h"
 #include "AutomaticDifferentiation.h"
+#include "MatrixRIDMME.h"
+#include <cmath>
+#include <iostream>
+#include <random>
+#include <vector>
 
 double RandN(double low, double up);
-void MontecarloSets(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const),
-                                   const array& x_low, const array& x_up,
-                                   const array& p_low, const array& p_up, int sample_succ_number,
-                                   int& time, matrix& Result_inf, matrix& Result_sup);
+void MontecarloSets(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR &,
+                                                    INTERVAL_VECTOR &,
+                                                    int const),
+                    const Array &x_low, const Array &x_up, const Array &p_low,
+                    const Array &p_up, int sample_succ_number, int &time,
+                    Matrix &Result_inf, Matrix &Result_sup);
 
 #endif

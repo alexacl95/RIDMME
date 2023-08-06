@@ -1,16 +1,16 @@
 #ifndef RE_H
 #define RE_H
 
-#include <iostream>
-#include <vector>
-#include <cmath>
+#include "MatrixRIDMME.h"
 #include <algorithm>
+#include <cmath>
+#include <iostream>
 #include <numeric>
-#include "Matrix.h"
+#include <vector>
 
-matrix NonUniformSubdivision(array Factor_inf, array Factor_sup, arrayInt& N);
-matrixInt generateAllPermutations(arrayInt& N);
-void ReduceN(arrayInt& N, arrayInt& N_0, int TimesN0, double PercentN);
-void RefinementIteration(arrayInt& N, int& i, arrayInt IterationRep, int& Step, 
-                         int Step0, arrayBool AnyNanElement, int n_x, int n_p);                        
+Matrix NonUniformSubdivision(Array Factor_inf, Array Factor_sup, ArrayInt &N);
+MatrixInt generateAllPermutations(ArrayInt &N);
+void ReduceN(ArrayInt &N, ArrayInt &N_0, int TimesN0, double PercentN);
+void RefinementIteration(ArrayInt &N, int &i, ArrayInt IterationRep, int &Step,
+                         int Step0, ArrayBool AnyNanElement, int n_x, int n_p);
 #endif

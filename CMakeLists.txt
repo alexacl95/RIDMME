@@ -14,11 +14,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(ENABLE_WARNINGS "Enable to add warnings to a target." ON)
 option(ENABLE_WARNINGS_AS_ERRORS "Enable to treat warnings as errors." OFF)
 option(ENABLE_CLANG_FORMAT "Enable to add clang-format." ON)
-
-
-# Project/Library Names
-set(EXECUTABLE_NAME "example")
-set(PROJECT_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/Source/Public")
+option(ENABLE_GENERATE_EXAMPLES "Generates project files for the example." ON)
 
 set(RIDMME_LIBRARY_NAME "RIDMME")
 
@@ -35,5 +31,7 @@ find_package(bias)
 
 # SUB DIRECTORIES
 add_subdirectory(Source)
-#add_subdirectory(Example)
+if(ENABLE_GENERATE_EXAMPLES)
+    add_subdirectory(Example)
+endif()
 

@@ -1,15 +1,23 @@
 #ifndef MO_H
 #define MO_H
-#include "Matrix.h"
-#include "Functions.h"
 #include "AutomaticDifferentiation.h"
+#include "Functions.h"
+#include "MatrixRIDMME.h"
 
-RIDMME_INTERVAL_AUTODIFF ModelFunction1(INTERVAL_VECTOR & v, INTERVAL_VECTOR & P, int const i);
-RIDMME_INTERVAL_AUTODIFF ModelFunction2(INTERVAL_VECTOR & v, INTERVAL_VECTOR & P, int const i);
-RIDMME_INTERVAL_AUTODIFF ModelFunction3(INTERVAL_VECTOR & v, INTERVAL_VECTOR & P, int const i);
-RIDMME_INTERVAL_AUTODIFF ModelFunction4(INTERVAL_VECTOR & v, INTERVAL_VECTOR & P, int const i);
-RIDMME_INTERVAL_AUTODIFF ModelExample(INTERVAL_VECTOR & v, INTERVAL_VECTOR& P, int const i);
-RIDMME_INTERVAL_AUTODIFF ModelDengue(INTERVAL_VECTOR & v, INTERVAL_VECTOR& P, int const i);
-RIDMME_INTERVAL_AUTODIFF ModelCOVID(INTERVAL_VECTOR & v, INTERVAL_VECTOR& P, int const i);
-RIDMME_INTERVAL_AUTODIFF DengueDiscretedModel(INTERVAL_VECTOR & v, INTERVAL_VECTOR& P, int const i);
+RIDMME_INTERVAL_AUTODIFF ModelFunction1(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
+                                        int const i);
+RIDMME_INTERVAL_AUTODIFF ModelFunction2(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
+                                        int const i);
+RIDMME_INTERVAL_AUTODIFF ModelFunction3(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
+                                        int const i);
+RIDMME_INTERVAL_AUTODIFF ModelFunction4(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
+                                        int const i);
+RIDMME_INTERVAL_AUTODIFF ModelExample(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
+                                      int const i);
+RIDMME_INTERVAL_AUTODIFF ModelDengue(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
+                                     int const i);
+RIDMME_INTERVAL_AUTODIFF ModelCOVID(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
+                                    int const i);
+RIDMME_INTERVAL_AUTODIFF DengueDiscretedModel(INTERVAL_VECTOR &v,
+                                              INTERVAL_VECTOR &P, int const i);
 #endif
