@@ -39,25 +39,31 @@ array SumModelDengue(array X_inf, array X_sup){
 int main(){
     //Model to use
     RIDMME_INTERVAL_AUTODIFF (*ModelName)(
-        INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const) = ModelDengue;
+        INTERVAL_VECTOR&, INTERVAL_VECTOR&, int const) = DengueDiscretedModel;
     //file names
-    string FileName = "ModelDengue_exp_2_2";
+    string FileName = "DengueDiscretedModel_exp_1";
 
     // Intervals for model states
-    array X_inf{405000, 7.2, 4.5, 25227, 3.6};
-    array X_sup{495000, 8.8, 5.5, 30833, 4.4};
+    array X_inf{332, 9.5, 9.5, 90.5, 0, 0, 0};
+    array X_sup{367, 10.5, 10.5, 100.5, 0, 0, 0};
 
     array P_inf{};
     array P_sup{};
     
-    // array P_inf{0.2, 0.5};
-    // array P_sup{0.22, 0.55};
-
-    int t_f = 15;
+    // array P_inf{0.76, 0.297, 0.297};
+    // array P_sup{0.84, 0.3030, 0.297};
+    
+    int t_f = 300;
          
-    arrayInt N = {5,5,5,5,5};
+    arrayInt N = {8,8,8,8,8,8,8};
 
     //Series of simulations
+
+    //Montecarlo simulations
+    int Samples = 1000;
+    matrix Monte_inf(t_f, array(X_inf.size())), Monte_sup(t_f, array(X_inf.size()));
+    MontecarloSets(ModelName, X_inf, X_sup, P_inf, P_sup, Samples, t_f, Monte_inf, Monte_sup);
+    saveMatricesToCSV(Monte_inf, Monte_sup, "Results/" + FileName + "_Montecarlo.csv");
 
     //RIDMME simulation
     matrix RIDMME_inf(t_f, array(X_inf.size())), RIDMME_sup(t_f, array(X_inf.size()));
@@ -68,15 +74,9 @@ int main(){
     matrix MixMon_inf(t_f, array(X_inf.size())), MixMon_sup(t_f, array(X_inf.size()));
     SimulationMixMon(ModelName, X_inf, X_sup, P_inf, P_sup, t_f, MixMon_inf, MixMon_sup);
     saveMatricesToCSV(MixMon_inf, MixMon_sup, "Results/" + FileName + "_MixMon.csv");
-
-    //Montecarlo simulations
-    int Samples = 1000;
-    matrix Monte_inf(t_f, array(X_inf.size())), Monte_sup(t_f, array(X_inf.size()));
-    MontecarloSets(ModelName, X_inf, X_sup, P_inf, P_sup, Samples, t_f, Monte_inf, Monte_sup);
-    saveMatricesToCSV(Monte_inf, Monte_sup, "Results/" + FileName + "_Montecarlo.csv");
-
+    
     // //Estimation of error using a user-defined function
-    array Constraint = SumModelDengue(X_inf, X_sup);
+    array Constraint = SumModel(X_inf, X_sup);
     matrix ConstraintLimits = merge2Vectors(array(t_f, Constraint[0]), array(t_f, Constraint[1]));
     
     matrixList Low(3), Up(3);
@@ -88,7 +88,7 @@ int main(){
     Up[1] = MixMon_sup;
     Up[2] = Monte_sup;
 
-    MultipleError(SumModelDengue, Low, Up, ConstraintLimits, 1, FileName);
+    MultipleError(SumModel, Low, Up, ConstraintLimits, 1, FileName);
     cout << endl;
 
     return 0;

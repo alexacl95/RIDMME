@@ -10,7 +10,7 @@
 using namespace std;
 
 using array = vector<double>;
-using matrix = vector<array>;
+using matrix = vector<vector<double>>;
 using matrixList = vector<matrix>;
 
 using arrayInt = vector<int>;

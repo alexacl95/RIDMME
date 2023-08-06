@@ -41,3 +41,6 @@
 *.ptx
 *.cubin
 *.fatbin
+
+build/
+third-party/
