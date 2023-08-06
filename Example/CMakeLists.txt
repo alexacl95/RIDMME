@@ -13,7 +13,6 @@ add_executable(${EXECUTABLE_NAME} ${SAMPLE_SOURCES} ${SAMPLE_HEADERS})
 
 target_link_libraries(
     ${EXECUTABLE_NAME}
-    PUBLIC bias::bias
     PUBLIC ${RIDMME_LIBRARY_NAME})
 target_set_warnings(
     TARGET

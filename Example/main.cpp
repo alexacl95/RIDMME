@@ -41,7 +41,7 @@ int main() {
   RIDMME_INTERVAL_AUTODIFF(*ModelName)
   (INTERVAL_VECTOR &, INTERVAL_VECTOR &, int const) = ModelExample;
   // file names
-  string FileName = "DengueDiscretedModel_exp_1";
+  string FileName = "ModelExample";
 
   // Intervals for model states
   Array X_inf{332, 9.5};
@@ -66,7 +66,7 @@ int main() {
   MontecarloSets(ModelName, X_inf, X_sup, P_inf, P_sup, Samples, t_f, Monte_inf,
                  Monte_sup);
   saveMatricesToCSV(Monte_inf, Monte_sup,
-                    "Results/" + FileName + "_Montecarlo.csv");
+                    "Example/Results/" + FileName + "_Montecarlo.csv");
 
   // RIDMME simulation
   Matrix RIDMME_inf(t_f, Array(X_inf.size())),
@@ -74,7 +74,7 @@ int main() {
   Simulation(ModelName, X_inf, X_sup, P_inf, P_sup, N, t_f, RIDMME_inf,
              RIDMME_sup);
   saveMatricesToCSV(RIDMME_inf, RIDMME_sup,
-                    "Results/" + FileName + "_RIDMME.csv");
+                    "Example/Results/" + FileName + "_RIDMME.csv");
 
   // Classical Mixed-monotonic simulation
   Matrix MixMon_inf(t_f, Array(X_inf.size())),
@@ -82,9 +82,9 @@ int main() {
   SimulationMixMon(ModelName, X_inf, X_sup, P_inf, P_sup, t_f, MixMon_inf,
                    MixMon_sup);
   saveMatricesToCSV(MixMon_inf, MixMon_sup,
-                    "Results/" + FileName + "_MixMon.csv");
+                    "Example/Results/" + FileName + "_MixMon.csv");
 
-  // //Estimation of error using a user-defined function
+  //Estimation of error using a user-defined function
   Array Constraint = SumModel(X_inf, X_sup);
   Matrix ConstraintLimits =
       merge2Vectors(Array(t_f, Constraint[0]), Array(t_f, Constraint[1]));
@@ -98,7 +98,7 @@ int main() {
   Up[1] = MixMon_sup;
   Up[2] = Monte_sup;
 
-  MultipleError(SumModel, Low, Up, ConstraintLimits, 1, FileName);
+  MultipleError(SumModel, Low, Up, ConstraintLimits, 1, "Example/Error/" + FileName);
   cout << endl;
 
   return 0;
