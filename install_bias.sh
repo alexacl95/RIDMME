@@ -1,4 +1,5 @@
 #!/bin/bash
+rm -r third-party
 mkdir third-party
 cd third-party
 wget https://www.tuhh.de/ti3/keil/profil/Profil-2.0.8.tgz
