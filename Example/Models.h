@@ -20,4 +20,9 @@ RIDMME_INTERVAL_AUTODIFF ModelCOVID(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
                                     int const i);
 RIDMME_INTERVAL_AUTODIFF DengueDiscretedModel(INTERVAL_VECTOR &v,
                                               INTERVAL_VECTOR &P, int const i);
+Array SumModel(Array X_inf, Array X_sup);
+Array SumModelDengue(Array X_inf, Array X_sup);
+void SetModelFactors(int ModelNumber,  RIDMME_INTERVAL_AUTODIFF(**ModelName)
+  (INTERVAL_VECTOR &, INTERVAL_VECTOR &, int const), Array& X_inf, Array& X_sup,
+  Array& P_inf, Array& P_sup, int& t_f, ArrayInt& N, Array (**ErrorExpression)(Array X_inf, Array X_sup));
 #endif

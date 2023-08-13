@@ -8,7 +8,6 @@ RIDMME_INTERVAL_AUTODIFF ModelFunction1(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
   // Parameter definition
   RIDMME_INTERVAL_AUTODIFF beta = x(4);
   RIDMME_INTERVAL_AUTODIFF gamma = x(5);
-  double mu = 0.0;
   // Prob
   RIDMME_INTERVAL_AUTODIFF G = beta * (x(2) / (x(1) + x(2) + x(3)));
   // Model functions
@@ -32,7 +31,7 @@ RIDMME_INTERVAL_AUTODIFF ModelFunction2(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
   // Parameter definition
   RIDMME_INTERVAL_AUTODIFF beta = x(5);  // x(5)
   RIDMME_INTERVAL_AUTODIFF gamma = x(6); // x(6)
-  RIDMME_INTERVAL_AUTODIFF theta = x(7); // x(7)
+  double theta = 0.3; // x(7)
   // Probability
   RIDMME_INTERVAL_AUTODIFF G = beta * (x(2) / (x(1) + x(2) + x(3) + x(4)));
   // Model functions
@@ -56,10 +55,9 @@ RIDMME_INTERVAL_AUTODIFF ModelFunction3(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
   // Martcheva-based model for a SARS model
   RIDMME_INTERVAL_AUTODIFF x = MergeTwoIntervalArr(v, P);
   // Parameter definition
-  double beta, gamma, mu, theta, alpha;
+  double beta, gamma, theta, alpha;
   beta = 0.8;
   gamma = 0.3;
-  mu = 0.01;
   theta = 0.3;
   alpha = 0.1;
   // Probability
@@ -69,8 +67,7 @@ RIDMME_INTERVAL_AUTODIFF ModelFunction3(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
   RIDMME_INTERVAL_AUTODIFF v2 = x(1) * G + (1 - theta) * (1 - alpha) * x(2);
   RIDMME_INTERVAL_AUTODIFF v3 = theta * x(2) + (1 - gamma) * (1 - alpha) * x(3);
   RIDMME_INTERVAL_AUTODIFF v4 = (1 - theta) * alpha * x(2) + (1 - theta) * x(4);
-  RIDMME_INTERVAL_AUTODIFF v5 =
-      theta * x(5) + (1 - gamma) * alpha * x(3) + (1 - gamma) * x(5);
+  RIDMME_INTERVAL_AUTODIFF v5 = theta * x(5) + (1 - gamma) * alpha * x(3) + (1 - gamma) * x(5);
   RIDMME_INTERVAL_AUTODIFF v6 = x(6) + gamma * (x(5) + x(3));
   // Save results
   vector<RIDMME_INTERVAL_AUTODIFF> w(6);
@@ -201,9 +198,7 @@ RIDMME_INTERVAL_AUTODIFF ModelCOVID(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
       1 + nu * (x(3) + x(4) + x(5)) / (x(1) + x(3) + x(4) + x(5));
   RIDMME_INTERVAL_AUTODIFF G1 =
       beta *
-      (1 -
-       Power(1 - Power(x(3) / (x(1) + x(2) + x(3) + x(4) + x(5) + x(6)), aleph),
-             z));
+      (1 - Power(1 - Power(x(3) / (x(1) + x(2) + x(3) + x(4) + x(5) + x(6)), aleph), z));
   // Model functions
   RIDMME_INTERVAL_AUTODIFF v1 =
       (1 - lambda) * (1 - G1) * x(1) + alpha * x(2) + mu * x(6);
@@ -276,4 +271,82 @@ RIDMME_INTERVAL_AUTODIFF DengueDiscretedModel(INTERVAL_VECTOR &v,
   // Result of the ith state
   RIDMME_INTERVAL_AUTODIFF result = w[i];
   return result;
+}
+
+// Metric functions for population models
+Array SumModel(Array X_inf, Array X_sup) {
+  int Size = X_inf.size();
+  Array SumStates(2, 0);
+  for (int i = 0; i < Size; i++) {
+    SumStates[0] = X_inf[i] + SumStates[0];
+    SumStates[1] = X_sup[i] + SumStates[1];
+  }
+  return SumStates;
+}
+
+Array SumModelDengue(Array X_inf, Array X_sup) {
+  int Size = 3;
+  Array SumStates(2, 0);
+  for (int i = 0; i < Size; i++) {
+    SumStates[0] = +X_inf[i];
+    SumStates[1] = +X_sup[i];
+  }
+  return SumStates;
+}
+
+// Sett initial conditions and parameters
+
+void SetModelFactors(int ModelNumber,  RIDMME_INTERVAL_AUTODIFF(**ModelName)
+  (INTERVAL_VECTOR &, INTERVAL_VECTOR &, int const), Array& X_inf, Array& X_sup,
+  Array& P_inf, Array& P_sup, int& t_f, ArrayInt& N, Array (**ErrorExpression)(Array X_inf, Array X_sup)) {
+    switch (ModelNumber){
+    case 1:
+        *ModelName = ModelFunction1;
+        X_inf = {332, 9.5, 9.5}; 
+        X_sup = {367, 10.5, 10.5};
+        P_inf = {0.76, 0.297};
+        P_sup = {0.84, 0.3030};
+        N = {15, 15, 15, 10, 10};
+        t_f = 30;
+        *ErrorExpression = SumModel;
+        break;
+    case 2: 
+        *ModelName = ModelFunction2;
+        X_inf = {332, 9.5, 9.5, 9.5};
+        X_sup = {367, 10.5, 10.5, 10.5};
+        P_inf = {0.76, 0.297};
+        P_sup = {0.84, 0.3030};
+        N = {15, 15, 15, 15, 10, 10};
+        t_f = 35;
+        *ErrorExpression = SumModel;
+        break;
+    case 3:        
+        *ModelName = ModelFunction3;
+        X_inf = {332, 9.5, 9.5, 9.5, 9.5, 9.5};
+        X_sup = {367, 10.5, 10.5, 10.5, 10.5, 10.5};
+        P_inf = {};
+        P_sup = {};
+        N = {10,10,10,10,10,10};
+        t_f = 35;
+        *ErrorExpression = SumModel;
+        break;
+    case 4: 
+        *ModelName = ModelFunction3;
+        X_inf = {};
+        X_sup = {};
+        P_inf = {};
+        P_sup = {};
+        t_f = 30;
+        *ErrorExpression = SumModelDengue;
+        break;  
+    case 5: 
+        break; 
+    case 6: 
+        break;  
+    case 7: 
+        break;  
+    default:
+        break;
+    }
+
 }

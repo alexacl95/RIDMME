@@ -42,5 +42,8 @@
 *.cubin
 *.fatbin
 
+#APOLO
+slurm.sh
+
 build/
 third-party/
