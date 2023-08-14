@@ -17,7 +17,6 @@ option(ENABLE_CLANG_FORMAT "Enable to add clang-format." ON)
 option(ENABLE_GENERATE_EXAMPLES "Generates project files for the example." ON)
 
 set(RIDMME_LIBRARY_NAME "RIDMME")
-
 # CMAKE MODULES
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/)
@@ -28,6 +27,7 @@ include(Tools)
 add_clang_format_target()
 
 find_package(bias)
+find_package(OpenMP)
 
 # SUB DIRECTORIES
 add_subdirectory(Source)

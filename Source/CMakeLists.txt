@@ -18,10 +18,16 @@ set(RIDMME_HEADERS
 set(RIDMME_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/Public/")
 
 # MyLib Library
+
 add_library(${RIDMME_LIBRARY_NAME} STATIC ${RIDMME_SOURCES} ${RIDMME_HEADERS})
 target_include_directories(
     ${RIDMME_LIBRARY_NAME}
     PUBLIC ${RIDMME_INCLUDES})
+
+if(OpenMP_CXX_FOUND)
+target_link_libraries(${RIDMME_LIBRARY_NAME} PUBLIC OpenMP::OpenMP_CXX)
+endif()
+
 target_link_libraries(
     ${RIDMME_LIBRARY_NAME}
     PUBLIC bias::bias)
