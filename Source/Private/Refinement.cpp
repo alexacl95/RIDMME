@@ -59,10 +59,10 @@ void RefinementIteration(ArrayInt &N, int &i, ArrayInt IterationRep, int &Step,
     // Go back to first iteration and increase de N size
     i = 1;
     for (int l = 0; l <= n_x + n_p; l++) {
-      if (N[l] < 2 * ceil(n_x + n_p)) {
-        N[l] = 2 * ceil(n_x + n_p);
+      if (N[l] < 1+ceil( (n_x + n_p))) {
+        N[l] = 1+ceil((n_x + n_p));
       } else {
-        N[l] = ceil(2.5 * (n_x + n_p));
+        N[l] = ceil(1.5 * (n_x + n_p));
       }
     }
     cout << "~~~~~~~~~~~~~Back to Iteration: " << i << "~~~~~~~~~~~~~" << endl;

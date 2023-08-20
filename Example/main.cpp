@@ -20,6 +20,7 @@
 int main(int argc, char* argv[]) {  
   // Model to use
   int ModelNumber = std::stoi(argv[1]);
+//   int ModelNumber = 2;
   cout << "Model selected: "+  to_string(ModelNumber) << endl;
   RIDMME_INTERVAL_AUTODIFF(*ModelName) (INTERVAL_VECTOR &, INTERVAL_VECTOR &, int const);
   Array (*ErrorExpression)(Array X_inf, Array X_sup);

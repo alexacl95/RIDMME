@@ -7,7 +7,8 @@ RIDMME_INTERVAL_AUTODIFF ModelFunction1(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
   RIDMME_INTERVAL_AUTODIFF x = MergeTwoIntervalArr(v, P);
   // Parameter definition
   RIDMME_INTERVAL_AUTODIFF beta = x(4);
-  RIDMME_INTERVAL_AUTODIFF gamma = x(5);
+//   RIDMME_INTERVAL_AUTODIFF gamma = x(5);
+  double gamma = 0.3;
   // Prob
   RIDMME_INTERVAL_AUTODIFF G = beta * (x(2) / (x(1) + x(2) + x(3)));
   // Model functions
@@ -30,7 +31,8 @@ RIDMME_INTERVAL_AUTODIFF ModelFunction2(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
   RIDMME_INTERVAL_AUTODIFF x = MergeTwoIntervalArr(v, P);
   // Parameter definition
   RIDMME_INTERVAL_AUTODIFF beta = x(5);  // x(5)
-  RIDMME_INTERVAL_AUTODIFF gamma = x(6); // x(6)
+//   RIDMME_INTERVAL_AUTODIFF gamma = x(6); // x(6)
+  double gamma = 0.3;
   double theta = 0.3; // x(7)
   // Probability
   RIDMME_INTERVAL_AUTODIFF G = beta * (x(2) / (x(1) + x(2) + x(3) + x(4)));
@@ -87,7 +89,7 @@ RIDMME_INTERVAL_AUTODIFF ModelFunction4(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
   // Martcheva-based model for a SEIR model
   RIDMME_INTERVAL_AUTODIFF x = MergeTwoIntervalArr(v, P);
   // Parameter definition
-  double beta_hm, beta_mh, gamma_h, gamma_m, mu_h, mu_m, A_m, A_h;
+  double beta_hm, beta_mh, gamma_h, gamma_m, mu_h, mu_m, A_m;
   beta_hm = 0.3;
   beta_mh = 0.2;
   gamma_h = 0.3;
@@ -95,13 +97,12 @@ RIDMME_INTERVAL_AUTODIFF ModelFunction4(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
   mu_h = 0.0;
   mu_m = 0.35;
   A_m = 100;
-  A_h = 0;
+//   A_h = 0;
   // Probability
   RIDMME_INTERVAL_AUTODIFF G_mh = beta_mh * (x(4) / (x(3) + x(4)));
   RIDMME_INTERVAL_AUTODIFF G_hm = beta_hm * (x(2) / (x(1) + x(2)));
   // Model functions
-  RIDMME_INTERVAL_AUTODIFF v1 =
-      A_h + (1 - mu_h) * (1 - G_mh) * x(1) + gamma_h * (1 - mu_h) * x(2);
+  RIDMME_INTERVAL_AUTODIFF v1 = (1 - mu_h) * (1 - G_mh) * x(1) + gamma_h * (1 - mu_h) * x(2);
   RIDMME_INTERVAL_AUTODIFF v2 =
       (1 - mu_h) * G_mh * x(1) + (1 - mu_h) * (1 - gamma_h) * x(2);
   RIDMME_INTERVAL_AUTODIFF v3 =
@@ -224,7 +225,7 @@ RIDMME_INTERVAL_AUTODIFF ModelCOVID(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
   return result;
 }
 
-RIDMME_INTERVAL_AUTODIFF DengueDiscretedModel(INTERVAL_VECTOR &v,
+RIDMME_INTERVAL_AUTODIFF DengueDiscretedModelPLOS(INTERVAL_VECTOR &v,
                                               INTERVAL_VECTOR &P, int const i) {
   RIDMME_INTERVAL_AUTODIFF x = MergeTwoIntervalArr(v, P);
   // Step
@@ -233,13 +234,7 @@ RIDMME_INTERVAL_AUTODIFF DengueDiscretedModel(INTERVAL_VECTOR &v,
   double mu_h = 0;
   double gamma = 1;
   double beta_hm = 0.87;
-  double beta_mh = 0.28;
   double mu_m = 0.35;
-  double z = 8;
-  double C = 325000;
-  double r = 0.12;
-  double nu_h = 0.0006;
-  double nu_m = 0.8;
   double A_m = 100;
   double tetha_m = 0.3;
   double tetha_h = 0.3;
@@ -304,9 +299,9 @@ void SetModelFactors(int ModelNumber,  RIDMME_INTERVAL_AUTODIFF(**ModelName)
         *ModelName = ModelFunction1;
         X_inf = {332, 9.5, 9.5}; 
         X_sup = {367, 10.5, 10.5};
-        P_inf = {0.76, 0.297};
-        P_sup = {0.84, 0.3030};
-        N = {15, 15, 15, 10, 10};
+        P_inf = {0.76};
+        P_sup = {0.84};
+        N = {15, 15, 15, 10};
         t_f = 30;
         *ErrorExpression = SumModel;
         break;
@@ -314,16 +309,16 @@ void SetModelFactors(int ModelNumber,  RIDMME_INTERVAL_AUTODIFF(**ModelName)
         *ModelName = ModelFunction2;
         X_inf = {332, 9.5, 9.5, 9.5};
         X_sup = {367, 10.5, 10.5, 10.5};
-        P_inf = {0.76, 0.297};
-        P_sup = {0.84, 0.3030};
-        N = {15, 15, 15, 15, 10, 10};
+        P_inf = {0.76};
+        P_sup = {0.84};
+        N = {15,15,15,15,10};
         t_f = 35;
         *ErrorExpression = SumModel;
         break;
     case 3:        
         *ModelName = ModelFunction3;
-        X_inf = {332, 9.5, 9.5, 9.5, 9.5, 9.5};
-        X_sup = {367, 10.5, 10.5, 10.5, 10.5, 10.5};
+        X_inf = {332, 9.5, 9.5, 9.5, 9.5, 0};
+        X_sup = {367, 10.5, 10.5, 10.5, 10.5, 0};
         P_inf = {};
         P_sup = {};
         N = {10,10,10,10,10,10};
@@ -331,20 +326,41 @@ void SetModelFactors(int ModelNumber,  RIDMME_INTERVAL_AUTODIFF(**ModelName)
         *ErrorExpression = SumModel;
         break;
     case 4: 
-        *ModelName = ModelFunction3;
-        X_inf = {};
-        X_sup = {};
+        *ModelName = ModelFunction4;
+        X_inf = {332, 9.5, 9.5, 0};
+        X_sup = {367, 10.5, 10.5, 0};
         P_inf = {};
         P_sup = {};
         t_f = 30;
         *ErrorExpression = SumModelDengue;
         break;  
-    case 5: 
+    case 5:     
+        *ModelName = ModelDengue;
+        X_inf = {};
+        X_sup = {};
+        P_inf = {};
+        P_sup = {};
+        t_f = 30;
+        *ErrorExpression = SumModelDengue;  
         break; 
-    case 6: 
+    case 6:    
+        *ModelName = ModelCOVID;
+        X_inf = {};
+        X_sup = {};
+        P_inf = {};
+        P_sup = {};
+        t_f = 30;
+        *ErrorExpression = SumModelDengue;  
         break;  
     case 7: 
-        break;  
+        *ModelName = DengueDiscretedModelPLOS;
+        X_inf = {};
+        X_sup = {};
+        P_inf = {};
+        P_sup = {};
+        t_f = 30;
+        *ErrorExpression = SumModelDengue;  
+        break;   
     default:
         break;
     }

@@ -129,6 +129,10 @@ void MultipleAutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR &,
     Jx_sup = Matrix(n_x, Array(n_x, numeric_limits<double>::infinity()));
     Jp_inf = Matrix(n_x, Array(n_p, -numeric_limits<double>::infinity()));
     Jp_sup = Matrix(n_x, Array(n_p, numeric_limits<double>::infinity()));
+    GrdInfList.clear();
+    GrdSupList.clear();
+    GrdInfPList.clear();
+    GrdSupPList.clear();
     return;
   }
   Jx_inf = findMinMaxMatrix(GrdInfList, 0);
@@ -136,6 +140,11 @@ void MultipleAutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR &,
 
   Jp_inf = findMinMaxMatrix(GrdInfPList, 0);
   Jp_sup = findMinMaxMatrix(GrdSupPList, 1);
+
+  GrdInfList.clear();
+  GrdSupList.clear();
+  GrdInfPList.clear();
+  GrdSupPList.clear();
 
   cout << "" << endl;
 }
