@@ -331,6 +331,7 @@ void SetModelFactors(int ModelNumber,  RIDMME_INTERVAL_AUTODIFF(**ModelName)
         X_sup = {367, 10.5, 10.5, 0};
         P_inf = {};
         P_sup = {};
+        N = {15,15,15,15};
         t_f = 30;
         *ErrorExpression = SumModelDengue;
         break;  
