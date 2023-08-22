@@ -74,7 +74,7 @@ int main(int argc, char* argv[]) {
 
   Up[0] = RIDMME_sup; Up[1] = MixMon_sup; Up[2] = Monte_sup;
 
-  MultipleError(ErrorExpression, Low, Up, ConstraintLimits, 1, "../../Example/Results/" + FileName);
+  MultipleError(ErrorExpression, Low, Up, ConstraintLimits, 1, "../../Example/Results/Error" + FileName);
   cout << endl;
 
   return 0.0;

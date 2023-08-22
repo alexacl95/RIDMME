@@ -89,12 +89,14 @@ RIDMME_INTERVAL_AUTODIFF ModelFunction4(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
   // Martcheva-based model for a SEIR model
   RIDMME_INTERVAL_AUTODIFF x = MergeTwoIntervalArr(v, P);
   // Parameter definition
-  double beta_hm, beta_mh, gamma_h, gamma_m, mu_h, mu_m, A_m;
+  double gamma_h, gamma_m, mu_m, A_m, beta_hm, mu_h;
   beta_hm = 0.3;
-  beta_mh = 0.2;
+//   RIDMME_INTERVAL_AUTODIFF beta_hm = x(5);
+  RIDMME_INTERVAL_AUTODIFF beta_mh = x(5);
+//   beta_mh = 0.2;
   gamma_h = 0.3;
   gamma_m = 0.01;
-  mu_h = 0.0;
+  mu_h = 0.001;
   mu_m = 0.35;
   A_m = 100;
 //   A_h = 0;
@@ -102,9 +104,8 @@ RIDMME_INTERVAL_AUTODIFF ModelFunction4(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
   RIDMME_INTERVAL_AUTODIFF G_mh = beta_mh * (x(4) / (x(3) + x(4)));
   RIDMME_INTERVAL_AUTODIFF G_hm = beta_hm * (x(2) / (x(1) + x(2)));
   // Model functions
-  RIDMME_INTERVAL_AUTODIFF v1 = (1 - mu_h) * (1 - G_mh) * x(1) + gamma_h * (1 - mu_h) * x(2);
-  RIDMME_INTERVAL_AUTODIFF v2 =
-      (1 - mu_h) * G_mh * x(1) + (1 - mu_h) * (1 - gamma_h) * x(2);
+  RIDMME_INTERVAL_AUTODIFF v1 = (1-mu_h)*(1 - G_mh) * x(1) + (1-mu_h)*gamma_h * x(2);
+  RIDMME_INTERVAL_AUTODIFF v2 = (1-mu_h)*G_mh * x(1) +  (1-mu_h)*(1 - gamma_h) * x(2);
   RIDMME_INTERVAL_AUTODIFF v3 =
       A_m + (1 - mu_m) * (1 - G_hm) * x(3) + (1 - mu_m) * gamma_m * x(4);
   RIDMME_INTERVAL_AUTODIFF v4 =
@@ -327,12 +328,12 @@ void SetModelFactors(int ModelNumber,  RIDMME_INTERVAL_AUTODIFF(**ModelName)
         break;
     case 4: 
         *ModelName = ModelFunction4;
-        X_inf = {332, 9.5, 9.5, 0};
-        X_sup = {367, 10.5, 10.5, 0};
-        P_inf = {};
-        P_sup = {};
-        N = {15,15,15,15};
-        t_f = 30;
+        X_inf = {332, 9.5, 9.5, 9.5};
+        X_sup = {367, 10.5, 10.5, 10.5};
+        P_inf = {0.15};
+        P_sup = {0.3};
+        N = {15,15,15,15,10};
+        t_f = 35;
         *ErrorExpression = SumModelDengue;
         break;  
     case 5:     
