@@ -338,21 +338,23 @@ void SetModelFactors(int ModelNumber,  RIDMME_INTERVAL_AUTODIFF(**ModelName)
         break;  
     case 5:     
         *ModelName = ModelDengue;
-        X_inf = {};
-        X_sup = {};
+        X_inf = {427500, 7.6, 4.75, 26628, 3.8};
+        X_sup = {472500, 8.4, 5.25, 29431, 4.2};
         P_inf = {};
         P_sup = {};
-        t_f = 30;
+        N = {15,15,15,15,15};
+        t_f = 50;
         *ErrorExpression = SumModelDengue;  
         break; 
     case 6:    
         *ModelName = ModelCOVID;
-        X_inf = {};
-        X_sup = {};
+        X_inf = {78850000, 0, 18, 0, 108, 15};
+        X_sup = {87150000, 0, 20, 0, 120, 17};
         P_inf = {};
         P_sup = {};
-        t_f = 30;
-        *ErrorExpression = SumModelDengue;  
+        N = {10,10,15,5,10,5};
+        t_f = 40;
+        *ErrorExpression = SumModel;  
         break;  
     case 7: 
         *ModelName = DengueDiscretedModelPLOS;

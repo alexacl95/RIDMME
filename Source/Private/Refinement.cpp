@@ -62,7 +62,7 @@ void RefinementIteration(ArrayInt &N, int &i, ArrayInt IterationRep, int &Step,
       if (N[l] < ceil( 1.5 *(n_x + n_p))) {
         N[l] = ceil(1.5 *(n_x + n_p));
       } else {
-        N[l] = ceil(1.8 * (n_x + n_p));
+        N[l] = ceil(1.8 * N[l]);
       }
     }
     cout << "~~~~~~~~~~~~~Back to Iteration: " << i << "~~~~~~~~~~~~~" << endl;
