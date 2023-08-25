@@ -35,7 +35,7 @@ RIDMME_INTERVAL_AUTODIFF ModelFunction2(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
   double gamma = 0.3;
   double theta = 0.3; // x(7)
   // Probability
-  RIDMME_INTERVAL_AUTODIFF G = beta * (x(2) / (x(1) + x(2) + x(3) + x(4)));
+  RIDMME_INTERVAL_AUTODIFF G = beta * (x(3) / (x(1) + x(2) + x(3) + x(4)));
   // Model functions
   RIDMME_INTERVAL_AUTODIFF v1 = (1 - G) * x(1);
   RIDMME_INTERVAL_AUTODIFF v2 = G * x(1) + (1 - theta) * x(2);
@@ -63,13 +63,13 @@ RIDMME_INTERVAL_AUTODIFF ModelFunction3(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
   theta = 0.3;
   alpha = 0.1;
   // Probability
-  RIDMME_INTERVAL_AUTODIFF G = beta * (x(2) / (x(1) + x(2) + x(3) + x(4)));
+  RIDMME_INTERVAL_AUTODIFF G = beta * (x(3) / (x(1) + x(2) + x(3) + x(6)));
   // Model functions
   RIDMME_INTERVAL_AUTODIFF v1 = x(1) * (1 - G);
   RIDMME_INTERVAL_AUTODIFF v2 = x(1) * G + (1 - theta) * (1 - alpha) * x(2);
-  RIDMME_INTERVAL_AUTODIFF v3 = theta * x(2) + (1 - gamma) * (1 - alpha) * x(3);
+  RIDMME_INTERVAL_AUTODIFF v3 = theta* x(2) + (1 - gamma) * (1 - alpha) * x(3);
   RIDMME_INTERVAL_AUTODIFF v4 = (1 - theta) * alpha * x(2) + (1 - theta) * x(4);
-  RIDMME_INTERVAL_AUTODIFF v5 = theta * x(5) + (1 - gamma) * alpha * x(3) + (1 - gamma) * x(5);
+  RIDMME_INTERVAL_AUTODIFF v5 = theta * x(4) + (1 - gamma) * alpha * x(3) + (1 - gamma) * x(5);
   RIDMME_INTERVAL_AUTODIFF v6 = x(6) + gamma * (x(5) + x(3));
   // Save results
   vector<RIDMME_INTERVAL_AUTODIFF> w(6);
@@ -143,7 +143,7 @@ RIDMME_INTERVAL_AUTODIFF ModelDengue(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
                                      int const i) {
   RIDMME_INTERVAL_AUTODIFF x = MergeTwoIntervalArr(v, P);
   // Parameters
-  double mu_h = 0;
+  // double mu_h = 0;
   double gamma = 1;
   double beta_hm = 0.87;
   double beta_mh = 0.28;
@@ -159,15 +159,13 @@ RIDMME_INTERVAL_AUTODIFF ModelDengue(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
   RIDMME_INTERVAL_AUTODIFF red_m =
       z * x(5) * Power((x(1) / (x(1) + x(2) + x(3))), aleph_H);
   RIDMME_INTERVAL_AUTODIFF phi = beta_mh * (1 - Power(1 - 1 / x(1), red_m));
-  RIDMME_INTERVAL_AUTODIFF psi =
-      beta_hm * (1 - Power(1 - Power(x(2) / (x(1) + x(2) + x(3)), aleph_M), z));
+  RIDMME_INTERVAL_AUTODIFF psi = beta_hm * (1 - Power(1 - Power(x(2) / (x(1) + x(2) + x(3)), aleph_M), z));
   RIDMME_INTERVAL_AUTODIFF A = r * (x(4) + x(5)) * Exp(1 - (x(4) + x(5)) / C);
+  
   // Human population
-  RIDMME_INTERVAL_AUTODIFF v1 =
-      x(1) * (1 - phi) * (1 - mu_h) + (x(1) + x(2) + x(3)) * mu_h;
-  RIDMME_INTERVAL_AUTODIFF v2 =
-      x(1) * phi * (1 - mu_h) + x(2) * (1 - gamma) * (1 - mu_h);
-  RIDMME_INTERVAL_AUTODIFF v3 = x(3) * (1 - mu_h) + x(2) * gamma * (1 - mu_h);
+  RIDMME_INTERVAL_AUTODIFF v1 = x(1) * (1 - phi);
+  RIDMME_INTERVAL_AUTODIFF v2 = x(1) * phi  + x(2) * (1 - gamma);
+  RIDMME_INTERVAL_AUTODIFF v3 = x(3) + x(2) * gamma ;
   // Mosquitoes population
   RIDMME_INTERVAL_AUTODIFF v4 = x(4) * (1 - psi) * (1 - mu_m) + A;
   RIDMME_INTERVAL_AUTODIFF v5 = x(4) * psi * (1 - mu_m) + x(5) * (1 - mu_m);
@@ -189,7 +187,7 @@ RIDMME_INTERVAL_AUTODIFF ModelCOVID(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
   // Parameter definition
   double lambda = 0.022;
   double alpha = 0.047;
-  double mu = 0;
+  // double mu = 0;
   double theta = 1;
   double gamma = 0.04;
   double nu = 19;
@@ -203,7 +201,7 @@ RIDMME_INTERVAL_AUTODIFF ModelCOVID(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
       (1 - Power(1 - Power(x(3) / (x(1) + x(2) + x(3) + x(4) + x(5) + x(6)), aleph), z));
   // Model functions
   RIDMME_INTERVAL_AUTODIFF v1 =
-      (1 - lambda) * (1 - G1) * x(1) + alpha * x(2) + mu * x(6);
+      (1 - lambda) * (1 - G1) * x(1) + alpha ;
   RIDMME_INTERVAL_AUTODIFF v2 = lambda * (1 - G1) * x(1) + (1 - alpha) * x(2);
   RIDMME_INTERVAL_AUTODIFF v3 =
       G1 * x(1) + (1 - lambda) * (1 - theta) * (1 - gamma) * x(3) +
@@ -212,7 +210,7 @@ RIDMME_INTERVAL_AUTODIFF ModelCOVID(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
                                 (1 - gamma) * (1 - theta) * (1 - alpha) * x(4);
   RIDMME_INTERVAL_AUTODIFF v5 = theta * (1 - gamma) * x(3) +
                                 theta * (1 - gamma) * x(4) + x(5) * (1 - gamma);
-  RIDMME_INTERVAL_AUTODIFF v6 = x(6) * (1 - mu) + gamma * (x(3) + x(4) + x(5));
+  RIDMME_INTERVAL_AUTODIFF v6 = x(6) + gamma * (x(3) + x(4) + x(5));
   // Save results
   vector<RIDMME_INTERVAL_AUTODIFF> w(6);
   w[0] = v1;
@@ -302,7 +300,7 @@ void SetModelFactors(int ModelNumber,  RIDMME_INTERVAL_AUTODIFF(**ModelName)
         X_sup = {367, 10.5, 10.5};
         P_inf = {0.76};
         P_sup = {0.84};
-        N = {15, 15, 15, 10};
+        N = {25, 25, 25, 20};
         t_f = 30;
         *ErrorExpression = SumModel;
         break;
@@ -318,21 +316,21 @@ void SetModelFactors(int ModelNumber,  RIDMME_INTERVAL_AUTODIFF(**ModelName)
         break;
     case 3:        
         *ModelName = ModelFunction3;
-        X_inf = {332, 9.5, 9.5, 9.5, 9.5, 0};
-        X_sup = {367, 10.5, 10.5, 10.5, 10.5, 0};
+        X_inf = {332, 9.5, 9.5, 9.5, 9.5, 9.5};
+        X_sup = {367, 10.5, 10.5, 10.5, 10.5, 10.5};
         P_inf = {};
         P_sup = {};
         N = {10,10,10,10,10,10};
-        t_f = 35;
+        t_f = 60;
         *ErrorExpression = SumModel;
         break;
     case 4: 
         *ModelName = ModelFunction4;
-        X_inf = {332, 9.5, 9.5, 9.5};
-        X_sup = {367, 10.5, 10.5, 10.5};
+        X_inf = {332, 9.5, 810, 9.5};
+        X_sup = {367, 10.5, 990, 10.5};
         P_inf = {0.15};
         P_sup = {0.3};
-        N = {15,15,15,15,10};
+        N = {15,15,15,15,15};
         t_f = 35;
         *ErrorExpression = SumModelDengue;
         break;  
@@ -348,11 +346,11 @@ void SetModelFactors(int ModelNumber,  RIDMME_INTERVAL_AUTODIFF(**ModelName)
         break; 
     case 6:    
         *ModelName = ModelCOVID;
-        X_inf = {78850000, 0, 18, 0, 108, 15};
-        X_sup = {87150000, 0, 20, 0, 120, 17};
+        X_inf = {7885000, 0, 1.8, 0, 10.8, 1.5};
+        X_sup = {8715000, 0, 2.0, 0, 12.0, 1.7};
         P_inf = {};
         P_sup = {};
-        N = {10,10,15,5,10,5};
+        N = {10,10,15,5,5,5};
         t_f = 40;
         *ErrorExpression = SumModel;  
         break;  

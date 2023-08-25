@@ -62,7 +62,7 @@ int main(int argc, char* argv[]) {
   timeSim = clock() - timeSim;
   saveMatricesToCSV(RIDMME_inf, RIDMME_sup,
                     "../../Example/Results/" + FileName + "_RIDMME.csv");
-  cout << "It took " << (float(timeSim))/CLOCKS_PER_SEC << " seconds for RIDMME.\n" << endl;      
+  cout << "It took " << timeSim/CLOCKS_PER_SEC << " seconds for RIDMME.\n" << endl;      
 
   //Estimation of error using a user-defined function
   Array Constraint = ErrorExpression(X_inf, X_sup);
