@@ -224,6 +224,30 @@ RIDMME_INTERVAL_AUTODIFF ModelCOVID(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
   return result;
 }
 
+RIDMME_INTERVAL_AUTODIFF ModelFunctionSin(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
+                                        int const i) {
+  // Martcheva-based model for a SIR with mortality model
+  RIDMME_INTERVAL_AUTODIFF x = MergeTwoIntervalArr(v, P);
+  // Parameter definition
+  RIDMME_INTERVAL_AUTODIFF beta = x(4) + 0.5*sin(i);
+//   RIDMME_INTERVAL_AUTODIFF gamma = x(5);
+  double gamma = 0.3;
+  // Prob
+  RIDMME_INTERVAL_AUTODIFF G = beta * (x(2) / (x(1) + x(2) + x(3)));
+  // Model functions
+  RIDMME_INTERVAL_AUTODIFF v1 = x(1) * (1 - G);
+  RIDMME_INTERVAL_AUTODIFF v2 = x(1) * G + x(2) * (1 - gamma);
+  RIDMME_INTERVAL_AUTODIFF v3 = x(3) + x(2) * gamma;
+  // Save results
+  vector<RIDMME_INTERVAL_AUTODIFF> w(3);
+  w[0] = v1;
+  w[1] = v2;
+  w[2] = v3;
+  // Result of the ith state
+  RIDMME_INTERVAL_AUTODIFF result = w[i];
+  return result;
+}
+
 RIDMME_INTERVAL_AUTODIFF DengueDiscretedModelPLOS(INTERVAL_VECTOR &v,
                                               INTERVAL_VECTOR &P, int const i) {
   RIDMME_INTERVAL_AUTODIFF x = MergeTwoIntervalArr(v, P);
@@ -363,6 +387,16 @@ void SetModelFactors(int ModelNumber,  RIDMME_INTERVAL_AUTODIFF(**ModelName)
         t_f = 30;
         *ErrorExpression = SumModelDengue;  
         break;   
+    case 8:
+        *ModelName = ModelFunctionSin;
+        X_inf = {332, 9.5, 9.5}; 
+        X_sup = {367, 10.5, 10.5};
+        P_inf = {0.76};
+        P_sup = {0.84};
+        N = {10, 10, 10, 10};
+        t_f = 35;
+        *ErrorExpression = SumModel;
+        break;
     default:
         break;
     }
