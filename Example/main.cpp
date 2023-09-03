@@ -19,10 +19,10 @@
 
 int main(int argc, char* argv[]) {  
   // Model to use
-  int ModelNumber = std::stoi(argv[1]);
-//   int ModelNumber = 2;
+  // int ModelNumber = std::stoi(argv[1]);
+  int ModelNumber = 4;
   cout << "Model selected: "+  to_string(ModelNumber) << endl;
-  RIDMME_INTERVAL_AUTODIFF(*ModelName) (INTERVAL_VECTOR &, INTERVAL_VECTOR &, int const);
+  RIDMME_INTERVAL_AUTODIFF(*ModelName) (INTERVAL_VECTOR &, INTERVAL_VECTOR &, int const, int const);
   Array (*ErrorExpression)(Array X_inf, Array X_sup);
   // file names
   string FileName = "Model_"+ to_string(ModelNumber);

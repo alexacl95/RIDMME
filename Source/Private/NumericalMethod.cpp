@@ -2,7 +2,7 @@
 
 void MixMonotonicityMethod(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR &,
                                                            INTERVAL_VECTOR &,
-                                                           int const),
+                                                           int const, int const),
                            double t, Array &x_low, Array &x_up, Array p_low,
                            Array p_up, Matrix J_x_low, Matrix J_x_up,
                            Matrix J_p_low, Matrix J_p_up) {
@@ -98,7 +98,7 @@ void MixMonotonicityMethod(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR &,
 }
 
 void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR &,
-                                                INTERVAL_VECTOR &, int const),
+                                                INTERVAL_VECTOR &, int const, int const),
                 Array X_inf, Array X_sup, Array P_inf, Array P_sup, ArrayInt N,
                 int t_f, Matrix &Results_low, Matrix &Results_up) {
   // Check that user
@@ -161,7 +161,7 @@ void Simulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR &,
 
 void SimulationMixMon(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR &,
                                                       INTERVAL_VECTOR &,
-                                                      int const),
+                                                      int const, int const),
                       Array X_inf, Array X_sup, Array P_inf, Array P_sup,
                       int t_f, Matrix &Results_low, Matrix &Results_up) {
   int n_x = X_inf.size();
@@ -191,9 +191,9 @@ void SimulationMixMon(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR &,
 
 void SingleSimulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR &,
                                                       INTERVAL_VECTOR &,
-                                                      int const),
+                                                      int const, int const),
                       Array &X_inf, Array &X_sup, Array P_inf, Array P_sup,
-                      ArrayInt N, int t_f, int i, ArrayBool &AnyNanElement) {
+                      ArrayInt N, int t_f, int iterationTime, ArrayBool &AnyNanElement) {
 
   int n_x = X_inf.size();
   int n_p = P_inf.size();
@@ -213,17 +213,17 @@ void SingleSimulation(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR &,
   Matrix Jp_inf(n_x, Array(n_p, numeric_limits<double>::quiet_NaN())),
       Jp_sup(n_x, Array(n_p, numeric_limits<double>::quiet_NaN()));
 
-  MultipleAutoDiffModel(fnc, X_sub, allPerms, N, Jx_inf, Jx_sup, Jp_inf, Jp_sup,
+  MultipleAutoDiffModel(fnc, X_sub, iterationTime, allPerms, N, Jx_inf, Jx_sup, Jp_inf, Jp_sup,
                         AnyNanElement);
   // mixed monotonicity numerical method;
-  MixMonotonicityMethod(fnc, i, X_inf, X_sup, P_inf, P_sup, Jx_inf, Jx_sup,
+  MixMonotonicityMethod(fnc, iterationTime, X_inf, X_sup, P_inf, P_sup, Jx_inf, Jx_sup,
                         Jp_inf, Jp_sup);
   cout << endl;
 }
 
 int CheckSimSettings(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR &,
                                                      INTERVAL_VECTOR &,
-                                                     int const),
+                                                     int const, int const),
                      Array X_inf, Array X_sup, Array P_inf, Array P_sup,
                      ArrayInt N) {
 

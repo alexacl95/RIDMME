@@ -2,8 +2,8 @@
 
 void AutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR &,
                                                    INTERVAL_VECTOR &,
-                                                   int const),
-                   Array X_inf, Array X_sup, Array P_inf, Array P_sup,
+                                                   int const,int const),
+                   Array X_inf, Array X_sup, Array P_inf, Array P_sup, int iterationTime,
                    Matrix &GrdInf, Matrix &GrdSup, Matrix &GrdInfP,
                    Matrix &GrdSupP) {
   int n_x = X_inf.size();
@@ -29,7 +29,7 @@ void AutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR &,
     // Calculation of inf and sup Jacobian values
     for (int i = 0; i < n_x; i++) {
       for (int j = 1; j <= n_p; j++) {
-        GrdP(j) = GradientValue(fnc(x, p, i))(n_x + j);
+        GrdP(j) = GradientValue(fnc(x, p, iterationTime, i))(n_x + j);
       }
       GrdInfP[i].resize(n_p), GrdSupP[i].resize(n_p);
       for (int j = 0; j < n_p; j++) {
@@ -45,7 +45,7 @@ void AutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR &,
 
   for (int i = 0; i < n_x; i++) {
     for (int j = 1; j <= n_x; j++) {
-      Grd(j) = GradientValue(fnc(x, p, i))(j);
+      Grd(j) = GradientValue(fnc(x, p, iterationTime, i))(j);
     }
     GrdInf[i].resize(n_x), GrdSup[i].resize(n_x);
     for (int j = 0; j < n_x; j++) {
@@ -57,8 +57,8 @@ void AutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR &,
 
 void MultipleAutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR &,
                                                            INTERVAL_VECTOR &,
-                                                           int const),
-                           Matrix X_sub, MatrixInt allPerms, ArrayInt N,
+                                                           int const, int const),
+                           Matrix X_sub, int iterationTime, MatrixInt allPerms, ArrayInt N,
                            Matrix &Jx_inf, Matrix &Jx_sup, Matrix &Jp_inf,
                            Matrix &Jp_sup, ArrayBool &AnyNanElement) {
 
@@ -100,7 +100,7 @@ void MultipleAutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR &,
           P_sup[j - n_x] = X_sub[N[j] + idx - 1][1];
         }
       }
-      AutoDiffModel(fnc, X_inf, X_sup, P_inf, P_sup, GrdInf, GrdSup, GrdInfP,
+      AutoDiffModel(fnc, X_inf, X_sup, P_inf, P_sup, iterationTime, GrdInf, GrdSup, GrdInfP,
                     GrdSupP);
 
       // check any element of gradient/jacobian are Nan
@@ -151,7 +151,7 @@ void MultipleAutoDiffModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR &,
 
 void ToDoubleEvaluationModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR &,
                                                              INTERVAL_VECTOR &,
-                                                             int const),
+                                                             int const, int const),
                              double t, Array &x, Array &p) {
   int n_x = x.size();
   INTERVAL_VECTOR X(n_x);
@@ -167,7 +167,7 @@ void ToDoubleEvaluationModel(RIDMME_INTERVAL_AUTODIFF (*fnc)(INTERVAL_VECTOR &,
 
   Array Sol(n_x);
   for (int i = 0; i < n_x; i++) {
-    Sol[i] = Inf(FunctionValue(fnc(X, P, i)));
+    Sol[i] = Inf(FunctionValue(fnc(X, P, t, i)));
   }
   x = Sol;
 }
