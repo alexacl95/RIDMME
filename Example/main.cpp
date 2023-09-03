@@ -12,18 +12,20 @@
 #include <iostream>
 #include <stdio.h>
 #include <vector>
-#include <time.h>
+#include <bits/stdc++.h>
 
 // Refinement of Interval Discrete Mixed-Monotonic Equations (RIDMME)
 // Note: config/systemFolderConfi/BiasRnd.h comment line 42 to compute Nan-inf.
 
 int main(int argc, char* argv[]) {  
   // Model to use
-  // int ModelNumber = std::stoi(argv[1]);
-  int ModelNumber = 4;
+  int ModelNumber = std::stoi(argv[1]);
+  //int ModelNumber = 4;
   cout << "Model selected: "+  to_string(ModelNumber) << endl;
   RIDMME_INTERVAL_AUTODIFF(*ModelName) (INTERVAL_VECTOR &, INTERVAL_VECTOR &, int const, int const);
   Array (*ErrorExpression)(Array X_inf, Array X_sup);
+  // time coutner
+  time_t start, end;
   // file names
   string FileName = "Model_"+ to_string(ModelNumber);
   // Intervals for model states
@@ -46,23 +48,35 @@ int main(int argc, char* argv[]) {
                     "../../Example/Results/" + FileName + "_Montecarlo.csv");
 
   // Classical Mixed-monotonic simulation
+  time(&start);
   Matrix MixMon_inf(t_f, Array(X_inf.size())),
       MixMon_sup(t_f, Array(X_inf.size()));
   SimulationMixMon(ModelName, X_inf, X_sup, P_inf, P_sup, t_f, MixMon_inf,
                    MixMon_sup);
+  time(&end);
   saveMatricesToCSV(MixMon_inf, MixMon_sup,
                     "../../Example/Results/" + FileName + "_MixMon.csv");
+    // Calculating total time taken by the program.
+    double time_taken = double(end - start);
+    cout << "Time taken by classic MixMon is : " << fixed
+        << time_taken << setprecision(5);
+    cout << " sec " << endl;    
 
   // RIDMME simulation
-  clock_t timeSim = clock();
+  time(&start);
   Matrix RIDMME_inf(t_f, Array(X_inf.size())),
       RIDMME_sup(t_f, Array(X_inf.size()));
   Simulation(ModelName, X_inf, X_sup, P_inf, P_sup, N, t_f, RIDMME_inf,
              RIDMME_sup);
-  timeSim = clock() - timeSim;
+  time(&end);
   saveMatricesToCSV(RIDMME_inf, RIDMME_sup,
                     "../../Example/Results/" + FileName + "_RIDMME.csv");
-  cout << "It took " << timeSim/CLOCKS_PER_SEC << " seconds for RIDMME.\n" << endl;      
+    
+    // Calculating total time taken by the program.
+    time_taken = double(end - start);
+    cout << "Time taken by RIDMME is : " << fixed
+        << time_taken << setprecision(5);
+    cout << " sec " << endl;      
 
   //Estimation of error using a user-defined function
   Array Constraint = ErrorExpression(X_inf, X_sup);

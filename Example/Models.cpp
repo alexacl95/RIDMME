@@ -229,11 +229,35 @@ RIDMME_INTERVAL_AUTODIFF ModelFunctionSin(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P
   // Martcheva-based model for a SIR with mortality model
   RIDMME_INTERVAL_AUTODIFF x = MergeTwoIntervalArr(v, P);
   // Parameter definition
-  RIDMME_INTERVAL_AUTODIFF beta = x(4) + 0.15*sin(2*0.8*time*M_PI);
+  RIDMME_INTERVAL_AUTODIFF beta = x(4) + 0.15*Sin(2*0.8*time*M_PI);
 //   RIDMME_INTERVAL_AUTODIFF gamma = x(5);
   double gamma = 0.3;
   // Prob
   RIDMME_INTERVAL_AUTODIFF G = beta * (x(2) / (x(1) + x(2) + x(3)));
+  // Model functions
+  RIDMME_INTERVAL_AUTODIFF v1 = x(1) * (1 - G);
+  RIDMME_INTERVAL_AUTODIFF v2 = x(1) * G + x(2) * (1 - gamma);
+  RIDMME_INTERVAL_AUTODIFF v3 = x(3) + x(2) * gamma;
+  // Save results
+  vector<RIDMME_INTERVAL_AUTODIFF> w(3);
+  w[0] = v1;
+  w[1] = v2;
+  w[2] = v3;
+  // Result of the ith state
+  RIDMME_INTERVAL_AUTODIFF result = w[i];
+  return result;
+}
+
+RIDMME_INTERVAL_AUTODIFF ModelFunctionExp(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
+                                        int const time, int const i) {
+  // Martcheva-based model for a SIR with mortality model
+  RIDMME_INTERVAL_AUTODIFF x = MergeTwoIntervalArr(v, P);
+  // Parameter definition
+  RIDMME_INTERVAL_AUTODIFF beta = Exp(-x(4)*x(2)/ (x(1) + x(2) + x(3)));
+//   RIDMME_INTERVAL_AUTODIFF gamma = x(5);
+  double gamma = 0.3;
+  // Prob
+  RIDMME_INTERVAL_AUTODIFF G = 1-beta;
   // Model functions
   RIDMME_INTERVAL_AUTODIFF v1 = x(1) * (1 - G);
   RIDMME_INTERVAL_AUTODIFF v2 = x(1) * G + x(2) * (1 - gamma);
@@ -324,7 +348,7 @@ void SetModelFactors(int ModelNumber,  RIDMME_INTERVAL_AUTODIFF(**ModelName)
         X_sup = {367, 10.5, 10.5};
         P_inf = {0.76};
         P_sup = {0.84};
-        N = {25, 25, 25, 20};
+        N = {25,25,25,10};
         t_f = 30;
         *ErrorExpression = SumModel;
         break;
@@ -374,8 +398,8 @@ void SetModelFactors(int ModelNumber,  RIDMME_INTERVAL_AUTODIFF(**ModelName)
         X_sup = {8715000, 0, 2.0, 0, 12.0, 1.7};
         P_inf = {};
         P_sup = {};
-        N = {10,10,15,5,5,5};
-        t_f = 40;
+        N = {15,15,15,5,5,5};
+        t_f = 25;
         *ErrorExpression = SumModel;  
         break;  
     case 7: 
@@ -393,12 +417,21 @@ void SetModelFactors(int ModelNumber,  RIDMME_INTERVAL_AUTODIFF(**ModelName)
         X_sup = {367, 10.5, 10.5};
         P_inf = {0.76};
         P_sup = {0.84};
-        N = {10,15,15,10};
+        N = {25,25,25,10};
+        t_f = 30;
+        *ErrorExpression = SumModel;
+        break;
+    case 9:
+        *ModelName = ModelFunctionExp;
+        X_inf = {332, 9.5, 9.5}; 
+        X_sup = {367, 10.5, 10.5};
+        P_inf = {0.76};
+        P_sup = {0.84};
+        N = {25,25,25,10};
         t_f = 30;
         *ErrorExpression = SumModel;
         break;
     default:
         break;
     }
-
 }

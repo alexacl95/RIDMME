@@ -19,7 +19,9 @@ RIDMME_INTERVAL_AUTODIFF ModelDengue(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
 RIDMME_INTERVAL_AUTODIFF ModelCOVID(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
                                     int const time, int const i);
 RIDMME_INTERVAL_AUTODIFF ModelFunctionSin(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
-                                        int const time, int const i);                                    
+                                        int const time, int const i);    
+RIDMME_INTERVAL_AUTODIFF ModelFunctionExp(INTERVAL_VECTOR &v, INTERVAL_VECTOR &P,
+                                        int const time, int const i);                                                                        
 RIDMME_INTERVAL_AUTODIFF DengueDiscretedModelPLOS(INTERVAL_VECTOR &v,
                                               INTERVAL_VECTOR &P, int const time, int const i);
 Array SumModel(Array X_inf, Array X_sup);
