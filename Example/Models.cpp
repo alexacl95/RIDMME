@@ -276,31 +276,33 @@ RIDMME_INTERVAL_AUTODIFF DengueDiscretedModelPLOS(INTERVAL_VECTOR &v,
                                               INTERVAL_VECTOR &P, int const time, int const i) {
   RIDMME_INTERVAL_AUTODIFF x = MergeTwoIntervalArr(v, P);
   // Step
-  double h = 0.1;
+  double h = 0.01;
   // Parameter definition
-  double mu_h = 0;
-  double gamma = 1;
-  double beta_hm = 0.87;
-  double mu_m = 0.35;
-  double A_m = 100;
-  double tetha_m = 0.3;
-  double tetha_h = 0.3;
+  //double mu_h = 0;
+  double gamma = 1.75;
+  double beta_h = 1.717;
+  // double beta_m = 0.134;
+  RIDMME_INTERVAL_AUTODIFF beta_m = x(8);
+  double mu_m = 0.196;
+  double A_m = 1881;
+  double tetha_m = 0.58;
+  double tetha_h = 0.79;
   // Model functions
   RIDMME_INTERVAL_AUTODIFF M = x(1) + x(2) + x(3);
   RIDMME_INTERVAL_AUTODIFF H = x(4) + x(5) + x(6) + x(7);
   // Model functions
   RIDMME_INTERVAL_AUTODIFF v1 =
-      x(1) + h * (A_m - beta_hm * x(1) * x(6) / H - mu_m * x(1));
+      x(1) + h * (A_m - beta_m * x(1) * x(6) / H - mu_m * x(1));
   RIDMME_INTERVAL_AUTODIFF v2 =
-      x(2) + h * (beta_hm * x(1) * x(6) / H - (tetha_m + mu_m) * x(2));
+      x(2) + h * (beta_m * x(1) * x(6) / H - (tetha_m + mu_m) * x(2));
   RIDMME_INTERVAL_AUTODIFF v3 = x(3) + h * (tetha_m * x(2) - mu_m * x(3));
   RIDMME_INTERVAL_AUTODIFF v4 =
-      x(4) + h * (mu_h * (x(5) + x(6) + x(7)) - beta_hm * x(4) * x(3) / M);
+      x(4) + h * ( - beta_h * x(4) * x(3) / M);
   RIDMME_INTERVAL_AUTODIFF v5 =
-      x(5) + h * (beta_hm * x(4) * x(3) / M + (tetha_h + mu_h) * x(5));
+      x(5) + h * (beta_h * x(4) * x(3) / M + tetha_h * x(5));
   RIDMME_INTERVAL_AUTODIFF v6 =
-      x(6) + h * (tetha_h * x(5) - (gamma + mu_h) * x(6));
-  RIDMME_INTERVAL_AUTODIFF v7 = x(7) + h * (gamma * x(6) - mu_h * x(7));
+      x(6) + h * (tetha_h * x(5) - gamma * x(6));
+  RIDMME_INTERVAL_AUTODIFF v7 = x(7) + h * (gamma * x(6));
   // Save results
   vector<RIDMME_INTERVAL_AUTODIFF> w(7);
   w[0] = v1;
@@ -394,20 +396,21 @@ void SetModelFactors(int ModelNumber,  RIDMME_INTERVAL_AUTODIFF(**ModelName)
         break; 
     case 6:    
         *ModelName = ModelCOVID;
-        X_inf = {7885000, 0, 1.8, 0, 10.8, 1.5};
-        X_sup = {8715000, 0, 2.0, 0, 12.0, 1.7};
+        X_inf = {7885000, 0, 1.2, 0, 11.0, 1.5};
+        X_sup = {8715000, 0, 1.5, 0, 12.0, 1.8};
         P_inf = {};
         P_sup = {};
-        N = {15,15,15,5,5,5};
+        N = {15,15,15,10,5,5};
         t_f = 25;
         *ErrorExpression = SumModel;  
         break;  
     case 7: 
         *ModelName = DengueDiscretedModelPLOS;
-        X_inf = {};
-        X_sup = {};
-        P_inf = {};
-        P_sup = {};
+        X_inf = {1100000,41,0,2862000, 16, 7, 73295};
+        X_sup = {1300000,50,0,3498000, 20, 9, 89582};
+        P_inf = {0.12};
+        P_sup = {0.147};
+        N = {5,5,5,5,5,5,5,5}; 
         t_f = 30;
         *ErrorExpression = SumModelDengue;  
         break;   
